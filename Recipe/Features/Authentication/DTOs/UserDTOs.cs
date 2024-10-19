@@ -5,7 +5,7 @@ namespace Recipe.Features.Authentication.DTOs;
 public class LoginDto
 {
     [MaxLength(64)]
-    public required string Username { get; set; }
+    public required string Login { get; set; }
 
     [MaxLength(64)]
     public required string Password { get; set; }
@@ -13,9 +13,9 @@ public class LoginDto
 
 public class UserCreateDto
 {
-    public required string Username { get; set; }
-    public required string FirstName { get; set; }
-    public required string LastName { get; set; }
+    public required string FullName { get; set; }
     public required string Email { get; set; }
+    public required string PhoneNumber { get; set; }
+    public required DateOnly BirthDate { get; set; }
     public required string Password { get; set; }
 }

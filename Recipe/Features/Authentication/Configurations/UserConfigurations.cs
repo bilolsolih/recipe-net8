@@ -9,15 +9,11 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(u => u.Id);
-        builder.Property(u => u.Username)
-               .IsRequired()
-               .HasMaxLength(64);
-        
-        builder.Property(u => u.FirstName)
-               .IsRequired()
-               .HasMaxLength(64);
-        
-        builder.Property(u => u.LastName)
+
+        builder.HasIndex(u => u.Email)
+               .IsUnique();
+
+        builder.Property(u => u.FullName)
                .IsRequired()
                .HasMaxLength(64);
 
@@ -25,13 +21,20 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
                .IsRequired()
                .HasMaxLength(64);
 
-        builder.Property(u => u.Password)
+        builder.Property(u => u.PhoneNumber)
+               .IsRequired()
+               .HasMaxLength(16);
+
+        builder.Property(u => u.BirthDate)
                .IsRequired();
 
-        builder.HasIndex(u => u.Username)
-               .IsUnique();
+        builder.Property(u => u.Gender)
+               .IsRequired(false);
 
-        builder.HasIndex(u => u.Email)
-               .IsUnique();
+        builder.Property(u => u.ProfilePhoto)
+               .IsRequired(false);
+
+        builder.Property(u => u.Password)
+               .IsRequired();
     }
 }

@@ -7,7 +7,7 @@ namespace Recipe.Features.Authentication.Services;
 
 public class TokenService(IConfiguration config)
 {
-    public async Task<string> GenerateTokenAsync(string username, int id)
+    public async Task<string> GenerateTokenAsync(string email, int id)
     {
         return await Task.Run(() =>
         {
@@ -15,7 +15,7 @@ public class TokenService(IConfiguration config)
             var secret = Encoding.ASCII.GetBytes(jwtSettings["Secret"]!);
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Sub, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("user_id", id.ToString()),
             };

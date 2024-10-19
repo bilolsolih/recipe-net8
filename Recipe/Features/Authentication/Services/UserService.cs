@@ -14,9 +14,9 @@ public class UserService(UserRepository repository, IMapper mapper)
         return await repository.CreateUser(user);
     }
 
-    public async Task<User?> GetUserByUsername(string username)
+    public async Task<User?> GetUserByEmail(string email)
     {
-        var user = await repository.GetUserByUsername(username);
+        var user = await repository.GetUserByEmail(email);
         return user;
     }
 }

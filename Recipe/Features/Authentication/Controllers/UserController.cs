@@ -12,7 +12,7 @@ public class UserController(UserService service, TokenService tokenService) : Co
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto payload)
     {
-        var user = await service.GetUserByUsername(payload.Username);
+        var user = await service.GetUserByEmail(payload.Login);
         if (user == null)
         {
             return NotFound(new { message = "User with this username doesn't exist." });
@@ -21,7 +21,7 @@ public class UserController(UserService service, TokenService tokenService) : Co
 
         if (payload.Password == user.Password)
         {
-            var token = await tokenService.GenerateTokenAsync(user.Username, user.Id);
+            var token = await tokenService.GenerateTokenAsync(user.Email, user.Id);
             return Ok(new { Token = token });
         }
 

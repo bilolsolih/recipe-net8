@@ -19,9 +19,9 @@ public class UserRepository(AuthContext context)
         return user;
     }
     
-    public async Task<User?> GetUserByUsername(string username)
+    public async Task<User?> GetUserByEmail(string email)
     {
-        var user = await context.Users.SingleOrDefaultAsync(u => u.Username == username);
+        var user = await context.Users.SingleOrDefaultAsync(u => u.Email == email);
         return user;
     }
 }
