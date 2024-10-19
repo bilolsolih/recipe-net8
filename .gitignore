@@ -1,0 +1,53 @@
+﻿# Build directories
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Environment and configuration files
+appsettings*.json
+appsettings*.Development.json
+
+# NuGet Packages
+*.nupkg
+packages/
+
+# Visual Studio-specific files
+.vscode/
+.vs/
+*.code-workspace
+
+# Rider (JetBrains) specific files
+.idea/
+*.sln.iml
+
+# Publish output
+wwwroot/
+node_modules/
+
+# Docker
+**/Dockerfile
+**/docker-compose*.yml
+
+# Local databases
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# Entity Framework Migrations
+Migrations/
+
+# Test results
+TestResults/
+
+# Secret keys and sensitive information
+secrets.json
