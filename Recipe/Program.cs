@@ -1,5 +1,5 @@
 using Recipe.Features.Authentication;
-using Recipe.Features.Authentication.Data;
+using Recipe.Features.Onboarding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.RegisterAuthenticationFeature(builder.Configuration); // Registering the Authentication Feature
+builder.Services.RegisterOnboardingFeature(builder.Configuration);
 
 var app = builder.Build();
 

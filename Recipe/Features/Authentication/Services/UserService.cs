@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Recipe.Features.Authentication.DTOs;
 using Recipe.Features.Authentication.Models;
 using Recipe.Features.Authentication.Repositories;

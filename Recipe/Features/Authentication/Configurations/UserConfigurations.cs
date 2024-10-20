@@ -28,13 +28,13 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.BirthDate)
                .IsRequired();
 
+        builder.Property(u => u.Password)
+               .IsRequired();
+
         builder.Property(u => u.Gender)
                .IsRequired(false);
 
         builder.Property(u => u.ProfilePhoto)
                .IsRequired(false);
-
-        builder.Property(u => u.Password)
-               .IsRequired();
     }
 }
