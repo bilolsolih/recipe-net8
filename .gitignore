@@ -1,6 +1,7 @@
 ﻿# Build directories
 bin/
 obj/
+uploads/
 
 # User-specific files
 *.user

@@ -9,6 +9,9 @@ public class CategoryConfigurations : IEntityTypeConfiguration<Category>
     public void Configure(EntityTypeBuilder<Category> builder)
     {
         builder.HasKey(c => c.Id);
+        
+        builder.HasIndex(c => c.Title)
+               .IsUnique();
 
         builder.Property(c => c.Title)
                .HasMaxLength(64)
@@ -17,7 +20,6 @@ public class CategoryConfigurations : IEntityTypeConfiguration<Category>
         builder.Property(c => c.Photo)
                .IsRequired();
 
-        builder.HasIndex(c => c.Title)
-               .IsUnique();
+
     }
 }

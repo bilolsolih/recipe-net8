@@ -21,7 +21,7 @@ public class OnboardingRepository(OnboardingContext context)
 
     public async Task<int> GetMaxOrderAsync()
     {
-        var maxOrder = await context.OnboardingPages.MaxAsync(o => o.Order);
+        var maxOrder = await context.OnboardingPages.MaxAsync(o => (int?)o.Order) ?? 0;
         return maxOrder;
     }
 

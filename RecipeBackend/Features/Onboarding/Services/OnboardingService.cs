@@ -29,11 +29,14 @@ public class OnboardingService(OnboardingRepository repository, IMapper mapper)
         }
 
         var orderExists = await repository.DoesOrderExistAsync((int)order);
-        
-        if (!orderExists) return await repository.GetMaxOrderAsync() + 1;
-        
+
+        if (!orderExists)
+        {
+            int maxOrder = await repository.GetMaxOrderAsync() + 1;
+            return maxOrder;
+        }
+
         await repository.IncrementOrdersFrom((int)order);
         return (int)order;
-
     }
 }
