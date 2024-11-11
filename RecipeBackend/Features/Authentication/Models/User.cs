@@ -21,6 +21,7 @@ public class User
     public string Password { get; set; }
 
     public ICollection<Recipe> Recipes { get; set; }
+    public ICollection<Review> Reviews { get; set; }
 
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
