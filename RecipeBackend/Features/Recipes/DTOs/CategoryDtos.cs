@@ -19,3 +19,9 @@ public class CategoryListDto
     public string Title { get; set; } = string.Empty;
     public string Photo { get; set; } = string.Empty;
 }
+
+public class CategoryUpdateDto
+{
+    public string? Title { get; set; }
+    public IFormFile? Photo { get; set; }
+}

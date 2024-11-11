@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using RecipeBackend.Features.Authentication.Data;
 using RecipeBackend.Features.Authentication.Repositories;
 using RecipeBackend.Features.Authentication.Services;
 
@@ -30,8 +29,6 @@ public static class AuthenticationExtensions
                 ClockSkew = TimeSpan.Zero
             };
         });
-
-        services.AddNpgsql<AuthContext>(config.GetConnectionString("DefaultConnection"));
 
         services.AddScoped<TokenService>();
         services.AddScoped<UserService>();

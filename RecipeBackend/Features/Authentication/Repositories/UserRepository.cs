@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RecipeBackend.Features.Authentication.Data;
+using RecipeBackend.Core;
 using RecipeBackend.Features.Authentication.Models;
 
 namespace RecipeBackend.Features.Authentication.Repositories;
 
-public class UserRepository(AuthContext context)
+public class UserRepository(RecipeDbContext context)
 {
     public async Task<User> CreateUser(User user)
     {
@@ -18,7 +18,7 @@ public class UserRepository(AuthContext context)
         var user = await context.Users.SingleOrDefaultAsync(u => u.Id == id);
         return user;
     }
-    
+
     public async Task<User?> GetUserByEmail(string email)
     {
         var user = await context.Users.SingleOrDefaultAsync(u => u.Email == email);

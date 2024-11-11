@@ -1,30 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RecipeBackend.Features.Recipes.DTOs;
+using RecipeBackend.Core;
+using RecipeBackend.Core.Exceptions;
+using RecipeBackend.Features.Recipes.Models;
 using RecipeBackend.Features.Recipes.Services;
 
 namespace RecipeBackend.Features.Recipes.Controllers;
 
 [ApiController, Route("api/v1/categories")]
-public class CategoryController(CategoryService service) : ControllerBase
+[TypeFilter(typeof(CoreExceptionsFilter))]
+public class MobileCategoryController(CategoryService service) : ControllerBase
 {
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateCategoryAsync([FromForm] CategoryCreateDto payload)
-    {
-        var newCategory = await service.CreateCategoryAsync(payload);
-        return StatusCode(201, newCategory);
-    }
-
     [HttpGet("detail/{id:int}")]
     public async Task<IActionResult> GetCategory(int id)
     {
         var category = await service.GetCategoryByIdAsync(id);
-
-        if (category == null)
-        {
-            return StatusCode(404, $"Category with id {id} not found.");
-        }
-
-        var baseUrl = HttpContext.Request;
+        DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
 
         return StatusCode(200, category);
     }

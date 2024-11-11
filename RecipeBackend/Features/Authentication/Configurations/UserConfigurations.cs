@@ -36,5 +36,13 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.ProfilePhoto)
                .IsRequired(false);
+
+        builder.Property(u => u.Created)
+               .HasDefaultValueSql("CURRENT_TIMESTAMP")
+               .ValueGeneratedOnAdd();
+
+        builder.Property(u => u.Updated)
+               .HasDefaultValueSql("CURRENT_TIMESTAMP")
+               .ValueGeneratedOnAddOrUpdate();
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RecipeBackend.Features.Onboarding.Data;
+using RecipeBackend.Core;
 using RecipeBackend.Features.Onboarding.Models;
 
 namespace RecipeBackend.Features.Onboarding.Repositories;
 
-public class OnboardingRepository(OnboardingContext context)
+public class OnboardingRepository(RecipeDbContext context)
 {
     public async Task<OnboardingPage> CreateAsync(OnboardingPage onboardingPage)
     {

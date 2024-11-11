@@ -8,4 +8,7 @@ public class Instruction
     public int Order { get; set; }
 
     public Recipe Recipe { get; set; }
+    
+    public DateTime Created { get; set; }
+    public DateTime Updated { get; set; }
 }

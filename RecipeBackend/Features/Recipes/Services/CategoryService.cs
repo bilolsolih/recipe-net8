@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+using RecipeBackend.Core.Exceptions;
 using RecipeBackend.Features.Recipes.DTOs;
 using RecipeBackend.Features.Recipes.Models;
 using RecipeBackend.Features.Recipes.Repositories;
@@ -11,33 +11,26 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
     public async Task<Category> CreateCategoryAsync(CategoryCreateDto payload)
     {
         ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(CategoryService)}");
+        if (await repo.CheckCategoryExistsAsync(title: payload.Title))
+        {
+            throw new AlreadyExistsException($"{nameof(Category)} with unique column {nameof(payload.Title)}: {payload.Title} already exists.");
+        }
+
         var fileName = await HandleCategoryPhotoAsync(payload.Photo);
         var newCategory = new Category
         {
             Title = payload.Title,
             Photo = fileName
         };
-
-        try
-        {
-            return await repo.CreateCategoryAsync(newCategory);
-        }
-        catch (DbUpdateException)
-        {
-            var filePath = Path.Combine(webEnv.GetUploadBasePath(), fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            throw;
-        }
+        return await repo.CreateCategoryAsync(newCategory);
     }
 
     public async Task<CategoryDetailDto?> GetCategoryByIdAsync(int id)
     {
         ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(CategoryService)}");
         var category = await repo.GetCategoryByIdAsync(id);
+        DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
+
         var categoryDetailDto = mapper.Map<CategoryDetailDto>(category);
         categoryDetailDto.Photo = httpContext.HttpContext.GetUploadsBaseUrl() + '/' + categoryDetailDto.Photo;
         return categoryDetailDto;
@@ -54,6 +47,46 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
         }
 
         return categories;
+    }
+
+    public async Task<Category> UpdateCategoryAsync(int id, CategoryUpdateDto payload)
+    {
+        if (!await repo.CheckCategoryExistsAsync(id: id))
+        {
+            throw new DoesNotExistException($"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
+        }
+
+        if (payload.Title != null && await repo.CheckCategoryExistsAsync(title: payload.Title))
+        {
+            throw new AlreadyExistsException($"{nameof(Category)} with unique column {nameof(payload.Title)}: {payload.Title} already exists.");
+        }
+
+        var category = await repo.GetCategoryByIdAsync(id);
+
+        if (payload.Title != null)
+        {
+            category!.Title = payload.Title;
+        }
+
+        if (payload.Photo != null)
+        {
+            await DeleteCategoryPhotoAsync(category!.Photo);
+            var fileName = await HandleCategoryPhotoAsync(payload.Photo);
+            category.Photo = fileName;
+        }
+
+        await repo.UpdateCategoryAsync();
+
+        return category!;
+    }
+
+    public async Task DeleteCategoryAsync(int id)
+    {
+        var category = await repo.GetCategoryByIdAsync(id);
+        DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
+        
+        await DeleteCategoryPhotoAsync(category!.Photo);
+        await repo.DeleteCategoryAsync(category);
     }
 
     private async Task<string> HandleCategoryPhotoAsync(IFormFile photo)
@@ -83,6 +116,7 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
         return relativeFilePath;
     }
 
+
     private string GetFileExtension(IFormFile photo)
     {
         var fileExtension = Path.GetExtension(photo.FileName);
@@ -93,5 +127,17 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
     {
         var guid = Guid.NewGuid().ToString("N");
         return guid[..length];
+    }
+
+    private async Task DeleteCategoryPhotoAsync(string fileName)
+    {
+        await Task.Run(() =>
+        {
+            var filePath = Path.Combine(webEnv.GetUploadBasePath(), fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        });
     }
 }
