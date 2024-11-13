@@ -9,6 +9,9 @@ public static class Extensions
     {
         services.AddScoped<CategoryRepository>();
         services.AddScoped<CategoryService>();
+
+        services.AddScoped<RecipeService>();
+        services.AddScoped<RecipeRepository>();
     }
 
     public static string GetUploadsBaseUrl(this HttpContext httpContext)

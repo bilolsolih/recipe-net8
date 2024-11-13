@@ -15,9 +15,9 @@ public class TokenService(IConfiguration config)
             var secret = Encoding.ASCII.GetBytes(jwtSettings["Secret"]!);
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Email, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("user_id", id.ToString()),
+                new Claim("userid", id.ToString()),
             };
 
             var key = new SymmetricSecurityKey(secret);

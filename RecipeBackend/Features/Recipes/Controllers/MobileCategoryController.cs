@@ -7,7 +7,6 @@ using RecipeBackend.Features.Recipes.Services;
 namespace RecipeBackend.Features.Recipes.Controllers;
 
 [ApiController, Route("api/v1/categories")]
-[TypeFilter(typeof(CoreExceptionsFilter))]
 public class MobileCategoryController(CategoryService service) : ControllerBase
 {
     [HttpGet("detail/{id:int}")]

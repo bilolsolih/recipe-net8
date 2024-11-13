@@ -6,6 +6,7 @@ public class Ingredient
     public int RecipeId { get; set; }
     public string Amount { get; set; }
     public string Name { get; set; }
+    public int Order { get; set; }
     public Recipe Recipe { get; set; }
 
     public DateTime Created { get; set; }

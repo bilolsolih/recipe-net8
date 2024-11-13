@@ -2,13 +2,13 @@
 
 namespace RecipeBackend.Core.Exceptions;
 
-public class DoesNotExistException(string message) : Exception(message)
+public class UploadedFileInvalidException(string message) : Exception(message)
 {
     public static void ThrowIfNull([NotNull] object? obj, string message)
     {
         if (obj == null)
         {
-            throw new DoesNotExistException(message);
+            throw new UploadedFileInvalidException(message);
         }
     }
 }

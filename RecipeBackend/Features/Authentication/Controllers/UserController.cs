@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RecipeBackend.Core.Exceptions;
 using RecipeBackend.Features.Authentication.DTOs;
 using RecipeBackend.Features.Authentication.Models;
 using RecipeBackend.Features.Authentication.Services;
@@ -11,12 +12,8 @@ public class UserController(UserService service, TokenService tokenService) : Co
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto payload)
     {
-        var user = await service.GetUserByEmail(payload.Login);
-        if (user == null)
-        {
-            return NotFound(new { message = "User with this username doesn't exist." });
-        }
-
+        var user = await service.GetUserByLoginAsync(payload.Login);
+        DoesNotExistException.ThrowIfNull(user, $"User with username: {payload.Login} does not exist.");
 
         if (payload.Password == user.Password)
         {
@@ -30,7 +27,7 @@ public class UserController(UserService service, TokenService tokenService) : Co
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(UserCreateDto payload)
     {
-        var user = await service.CreateUser(payload);
+        var user = await service.CreateUserAsync(payload);
         return Ok(user);
     }
 }

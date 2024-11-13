@@ -15,13 +15,10 @@ public class Recipe
     public int UserId { get; set; }
     public int CategoryId { get; set; }
     public string Title { get; set; } = string.Empty;
-    public string ShortDescription { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public string Photo { get; set; } = string.Empty;
     public string VideoRecipe { get; set; } = string.Empty;
-    public string Details { get; set; } = string.Empty;
     public int TimeRequired { get; set; }
-
-    public bool IsPublished { get; set; }
 
     public User User { get; set; }
     public Category Category { get; set; }

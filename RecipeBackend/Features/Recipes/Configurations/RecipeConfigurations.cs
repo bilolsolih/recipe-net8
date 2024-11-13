@@ -18,11 +18,9 @@ public class RecipeConfigurations : IEntityTypeConfiguration<Recipe>
         builder.HasOne(r => r.Category).WithMany(c => c.Recipes);
         
         builder.Property(r => r.Title).HasMaxLength(64).IsRequired();
-        builder.Property(r => r.ShortDescription).HasMaxLength(128).IsRequired();
+        builder.Property(r => r.Description).HasMaxLength(1024).IsRequired();
         builder.Property(r => r.Photo).IsRequired();
         builder.Property(r => r.VideoRecipe).IsRequired();
-        builder.Property(r => r.Details).HasMaxLength(1024).IsRequired();
-        builder.Property(r => r.IsPublished).HasDefaultValue(false).IsRequired();
         
         builder.Property(r => r.Created)
                .HasDefaultValueSql("CURRENT_TIMESTAMP")

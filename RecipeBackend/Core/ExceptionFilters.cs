@@ -16,13 +16,20 @@ public class CoreExceptionsFilter : IExceptionFilter
             };
 
             context.ExceptionHandled = true;
-        } else if (context.Exception is DoesNotExistException)
+        }
+        else if (context.Exception is DoesNotExistException)
         {
             context.Result = new ObjectResult($"Object with the given credentials does not exist. {context.Exception.Message}")
             {
                 StatusCode = 404
             };
         }
-        
+        else if (context.Exception is UploadedFileInvalidException)
+        {
+            context.Result = new ObjectResult($"Problem with the uploaded file. {context.Exception.Message}")
+            {
+                StatusCode = 400
+            };
+        }
     }
 }

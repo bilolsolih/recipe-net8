@@ -91,21 +91,20 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
 
     private async Task<string> HandleCategoryPhotoAsync(IFormFile photo)
     {
-        var rootPath = webEnv.ContentRootPath;
         var lastPeriodIndex = photo.FileName.LastIndexOf('.');
         var fileName = lastPeriodIndex == -1 ? photo.FileName : photo.FileName[..lastPeriodIndex] + GenerateShortGuid();
         fileName += GetFileExtension(photo);
 
-        var filePath = Path.Combine(rootPath, "uploads", "categories", fileName);
+        var filePath = Path.Combine(webEnv.GetUploadBasePath(), "categories", fileName);
 
-        if (!Directory.Exists(Path.Combine(rootPath, "uploads")))
+        if (!Directory.Exists(webEnv.GetUploadBasePath()))
         {
-            Directory.CreateDirectory(Path.Combine(rootPath, "uploads"));
+            Directory.CreateDirectory(webEnv.GetUploadBasePath());
         }
 
-        if (!Directory.Exists(Path.Combine(rootPath, "uploads", "categories")))
+        if (!Directory.Exists(Path.Combine(webEnv.GetUploadBasePath(), "categories")))
         {
-            Directory.CreateDirectory(Path.Combine(rootPath, "uploads", "categories"));
+            Directory.CreateDirectory(Path.Combine(webEnv.GetUploadBasePath(), "categories"));
         }
 
         await using var fileStream = new FileStream(filePath, FileMode.Create);

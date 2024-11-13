@@ -19,9 +19,9 @@ public class UserRepository(RecipeDbContext context)
         return user;
     }
 
-    public async Task<User?> GetUserByEmail(string email)
+    public async Task<User?> GetUserByLoginAsync(string value)
     {
-        var user = await context.Users.SingleOrDefaultAsync(u => u.Email == email);
+        var user = await context.Users.SingleOrDefaultAsync(u => u.Email == value || u.Username == value || u.PhoneNumber == value);
         return user;
     }
 }

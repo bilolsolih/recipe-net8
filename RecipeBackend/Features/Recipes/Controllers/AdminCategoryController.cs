@@ -6,7 +6,6 @@ using RecipeBackend.Features.Recipes.Services;
 namespace RecipeBackend.Features.Recipes.Controllers;
 
 [ApiController, Route("api/v1/admin/categories")]
-[TypeFilter(typeof(CoreExceptionsFilter))]
 public class AdminCategoryController(CategoryService service) : ControllerBase
 {
     [HttpPost("create")]
