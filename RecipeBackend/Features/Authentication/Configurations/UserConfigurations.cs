@@ -11,38 +11,49 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
 
         builder.HasIndex(u => u.Email)
-               .IsUnique();
+            .IsUnique();
+
+        builder.HasIndex(u => u.Username)
+            .IsUnique();
+
+        builder.Property(u => u.Username)
+            .IsRequired()
+            .HasMaxLength(24);
 
         builder.Property(u => u.FullName)
-               .IsRequired()
-               .HasMaxLength(64);
+            .IsRequired()
+            .HasMaxLength(64);
 
         builder.Property(u => u.Email)
-               .IsRequired()
-               .HasMaxLength(64);
+            .IsRequired()
+            .HasMaxLength(64);
+
+        builder.Property(u => u.Presentation)
+            .IsRequired(false)
+            .HasMaxLength(256);
 
         builder.Property(u => u.PhoneNumber)
-               .IsRequired()
-               .HasMaxLength(16);
+            .IsRequired()
+            .HasMaxLength(16);
 
         builder.Property(u => u.BirthDate)
-               .IsRequired();
+            .IsRequired();
 
         builder.Property(u => u.Password)
-               .IsRequired();
+            .IsRequired();
 
         builder.Property(u => u.Gender)
-               .IsRequired(false);
+            .IsRequired(false);
 
         builder.Property(u => u.ProfilePhoto)
-               .IsRequired(false);
+            .IsRequired(false);
 
         builder.Property(u => u.Created)
-               .HasDefaultValueSql("CURRENT_TIMESTAMP")
-               .ValueGeneratedOnAdd();
+            .HasDefaultValueSql("CURRENT_TIMESTAMP")
+            .ValueGeneratedOnAdd();
 
         builder.Property(u => u.Updated)
-               .HasDefaultValueSql("CURRENT_TIMESTAMP")
-               .ValueGeneratedOnAddOrUpdate();
+            .HasDefaultValueSql("CURRENT_TIMESTAMP")
+            .ValueGeneratedOnAddOrUpdate();
     }
 }

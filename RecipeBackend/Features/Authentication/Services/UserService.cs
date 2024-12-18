@@ -10,8 +10,11 @@ public class UserService(UserRepository repository, IMapper mapper)
 {
     public async Task<User> CreateUserAsync(UserCreateDto payload)
     {
-        payload.BirthDate = DateOnly.ParseExact(payload.BirthDate.ToString()!, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        payload.BirthDate = DateOnly.ParseExact(
+            payload.BirthDate.ToString()!, "yyyy-MM-dd", CultureInfo.InvariantCulture
+        );
         var user = mapper.Map<User>(payload);
+        
         return await repository.CreateUser(user);
     }
 

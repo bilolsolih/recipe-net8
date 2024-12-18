@@ -11,12 +11,21 @@ public class OnboardingController(OnboardingService service) : ControllerBase
     [HttpPost("create")]
     public async Task<OnboardingPage> Create(OnboardingPageCreateDto payload)
     {
-        return await service.CreateAsync(payload);
+        var newOnboardingPage = await service.CreateAsync(payload);
+        return newOnboardingPage;
     }
 
     [HttpGet("list")]
-    public async Task<IList<OnboardingPageListDto>> List()
+    public async Task<IList<OnboardingPage>> List()
     {
-        return await service.ListAsync();
+        var onboardingPages = await service.ListAsync();
+        return onboardingPages;
     }
+
+    // [HttpPatch("update/{id:int}")]
+    // public async Task<OnboardingPage> Update(int id, OnboardingPageUpdateDto payload)
+    // {
+    //     var updatedOnboardingPage = await service.UpdateOnboardingPageAsync(id, payload);
+    //     return updatedOnboardingPage;
+    // }
 }

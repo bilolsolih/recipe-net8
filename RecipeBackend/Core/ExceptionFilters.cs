@@ -24,7 +24,7 @@ public class CoreExceptionsFilter : IExceptionFilter
                 StatusCode = 404
             };
         }
-        else if (context.Exception is UploadedFileInvalidException)
+        else if (context.Exception is InvalidFileException)
         {
             context.Result = new ObjectResult($"Problem with the uploaded file. {context.Exception.Message}")
             {

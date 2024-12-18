@@ -16,5 +16,12 @@ public class RecipeProfile : Profile
             .ForMember(dest => dest.Reviews, opt => opt.Ignore())
             .ForMember(dest => dest.Created, opt => opt.Ignore())
             .ForMember(dest => dest.Updated, opt => opt.Ignore());
+        
+        CreateMap<IngredientCreateDto, Ingredient>();
+
+        CreateMap<InstructionDto, Instruction>();
     }
+    
+    
+    
 }

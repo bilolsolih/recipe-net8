@@ -20,3 +20,10 @@ public class UserCreateDto
     public required object BirthDate { get; set; }
     public required string Password { get; set; }
 }
+
+public class UserCompleteDto
+{
+    public FormFile ProfilePhoto { get; set; }
+    public string Gender { get; set; }
+    public string Bio { get; set; }
+}

@@ -4,7 +4,7 @@ public class OnboardingPageCreateDto
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
-    public string Picture { get; set; } = string.Empty;
+    public IFormFile Picture { get; set; }
     public int? Order { get; set; }
 }
 
@@ -12,7 +12,7 @@ public class OnboardingPageUpdateDto
 {
     public string? Title { get; set; }
     public string? Subtitle { get; set; }
-    public string? Picture { get; set; }
+    public IFormFile? Picture { get; set; }
     public int? Order { get; set; }
 }
 

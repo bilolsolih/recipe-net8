@@ -18,7 +18,7 @@ public class UserController(UserService service, TokenService tokenService) : Co
         if (payload.Password == user.Password)
         {
             var token = await tokenService.GenerateTokenAsync(user.Email, user.Id);
-            return Ok(new { Token = token });
+            return Ok(new { AccessToken = token });
         }
 
         return Unauthorized();
@@ -28,6 +28,6 @@ public class UserController(UserService service, TokenService tokenService) : Co
     public async Task<ActionResult<User>> Register(UserCreateDto payload)
     {
         var user = await service.CreateUserAsync(payload);
-        return Ok(user);
+        return StatusCode(statusCode: 201, user);
     }
 }

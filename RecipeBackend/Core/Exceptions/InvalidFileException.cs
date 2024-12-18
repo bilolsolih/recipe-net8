@@ -2,13 +2,13 @@
 
 namespace RecipeBackend.Core.Exceptions;
 
-public class UploadedFileInvalidException(string message) : Exception(message)
+public class InvalidFileException(string message) : Exception(message)
 {
     public static void ThrowIfNull([NotNull] object? obj, string message)
     {
         if (obj == null)
         {
-            throw new UploadedFileInvalidException(message);
+            throw new InvalidFileException(message);
         }
     }
 }

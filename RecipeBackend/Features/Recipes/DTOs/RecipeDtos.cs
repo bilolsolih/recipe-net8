@@ -8,16 +8,11 @@ public class RecipeCreateDto
     public string Description { get; set; }
     public int TimeRequired { get; set; }
 
-    public IList<IngredientDto> Ingredients { get; set; } = new List<IngredientDto>();
-    public IList<InstructionDto> Instructions { get; set; } = new List<InstructionDto>();
+    // public IList<IngredientDto> Ingredients { get; set; } = new List<IngredientDto>();
+    // public IList<InstructionDto> Instructions { get; set; } = new List<InstructionDto>();
 }
 
-public class IngredientDto
-{
-    public string Amount { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public int Order { get; set; }
-}
+
 
 public class InstructionDto
 {
