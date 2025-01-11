@@ -38,7 +38,8 @@ public class RecipeService(
         var baseUrl = httpContext.HttpContext.GetUploadsBaseUrl() + '/';
         foreach (var recipe in recipes)
         {
-            recipe.Photo = baseUrl + recipe.Photo;
+            if (recipe.Photo != null)
+                recipe.Photo = baseUrl + recipe.Photo;
         }
 
         return recipes;

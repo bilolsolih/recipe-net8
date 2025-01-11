@@ -19,7 +19,7 @@ public class RecipeListDto
     public int CategoryId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public string Photo { get; set; }
+    public string? Photo { get; set; }
     public int TimeRequired { get; set; }
     public UserForRecipeDetailDto User { get; set; }
 }
@@ -29,8 +29,8 @@ public class RecipeDetailDto
     public int CategoryId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public string Photo { get; set; }
-    public string VideoRecipe { get; set; }
+    public string? Photo { get; set; }
+    public string? VideoRecipe { get; set; }
     public int TimeRequired { get; set; }
     public UserForRecipeDetailDto User { get; set; }
 
@@ -51,7 +51,7 @@ public class RecipeUpdateDto
 public class UserForRecipeDetailDto
 {
     public int Id { get; set; }
-    public string ProfilePhoto { get; set; }
+    public string? ProfilePhoto { get; set; }
     public string Username { get; set; }
     public string FullName { get; set; }
 }
