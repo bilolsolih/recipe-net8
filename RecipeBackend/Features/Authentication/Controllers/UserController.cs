@@ -30,4 +30,9 @@ public class UserController(UserService service, TokenService tokenService) : Co
         var user = await service.CreateUserAsync(payload);
         return StatusCode(statusCode: 201, user);
     }
+    //
+    // [HttpPatch("complete/{id:int}")]
+    // public async Task<IActionResult> Complete(UserCompleteDto payload)
+    // {
+    // }
 }

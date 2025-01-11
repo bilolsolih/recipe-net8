@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RecipeBackend.Features.Authentication.Configurations;
 using RecipeBackend.Features.Authentication.Models;
+using RecipeBackend.Features.Customization.Configurations;
+using RecipeBackend.Features.Customization.Models;
 using RecipeBackend.Features.Onboarding.Configurations;
 using RecipeBackend.Features.Onboarding.Models;
 using RecipeBackend.Features.Recipes.Configurations;
@@ -19,6 +21,8 @@ public class RecipeDbContext(DbContextOptions<RecipeDbContext> options) : DbCont
     public DbSet<Review> Reviews { get; set; }
 
     public DbSet<OnboardingPage> OnboardingPages { get; set; }
+    public DbSet<AllergicIngredient> AllergicIngredients { get; set; }
+    public DbSet<Cuisine> Cuisines { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,5 +36,7 @@ public class RecipeDbContext(DbContextOptions<RecipeDbContext> options) : DbCont
         modelBuilder.ApplyConfiguration(new ReviewConfigurations());
 
         modelBuilder.ApplyConfiguration(new OnboardingConfigurations());
+        modelBuilder.ApplyConfiguration(new AllergicIngredientConfigurations());
+        modelBuilder.ApplyConfiguration(new CuisineConfigurations());
     }
 }

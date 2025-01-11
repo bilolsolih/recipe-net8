@@ -1,4 +1,6 @@
-﻿namespace RecipeBackend.Features.Recipes.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace RecipeBackend.Features.Recipes.Models;
 
 public class Ingredient
 {
@@ -7,6 +9,7 @@ public class Ingredient
     public string Amount { get; set; }
     public string Name { get; set; }
     public int Order { get; set; }
+    [JsonIgnore]
     public Recipe Recipe { get; set; }
 
     public DateTime Created { get; set; }

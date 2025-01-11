@@ -1,12 +1,21 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using RecipeBackend.Core;
 using RecipeBackend.Core.Exceptions;
 using RecipeBackend.Features.Recipes.DTOs;
+using RecipeBackend.Features.Recipes.Filters;
 using RecipeBackend.Features.Recipes.Models;
 using RecipeBackend.Features.Recipes.Repositories;
 
 namespace RecipeBackend.Features.Recipes.Services;
 
-public class RecipeService(RecipeRepository repository, CategoryRepository categoryRepo, IMapper mapper, IWebHostEnvironment webEnv)
+public class RecipeService(
+    RecipeRepository repository,
+    CategoryRepository categoryRepo,
+    IMapper mapper,
+    IWebHostEnvironment webEnv,
+    IHttpContextAccessor httpContext)
+    : ServiceBase("recipes", webEnv)
 {
     public async Task<Recipe> CreateRecipeAsync(RecipeCreateDto payload, int userId)
     {
@@ -17,26 +26,60 @@ public class RecipeService(RecipeRepository repository, CategoryRepository categ
 
         var newRecipe = mapper.Map<Recipe>(payload);
 
-        var videoRecipe = await HandleRecipeVideoAsync(payload.VideoRecipe);
-
-        newRecipe.VideoRecipe = videoRecipe;
         newRecipe.UserId = userId;
 
-        // newRecipe.Ingredients = payload.Ingredients.Select(ingredientDto =>
-        // {
-        //     var ingredient = mapper.Map<Ingredient>(ingredientDto);
-        //     ingredient.RecipeId = newRecipe.Id;
-        //     return ingredient;
-        // }).ToList();
-        //
-        // newRecipe.Instructions = payload.Instructions.Select(dto =>
-        // {
-        //     var instruction = mapper.Map<Instruction>(dto);
-        //     instruction.RecipeId = newRecipe.Id;
-        //     return instruction;
-        // }).ToList();
-
         return await repository.CreateRecipeAsync(newRecipe);
+    }
+
+    public async Task<List<RecipeListDto>> ListRecipesAsync(RecipeFilters? filters = null)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(RecipeService)}");
+        var recipes = await repository.ListRecipesAsync(filters);
+        var baseUrl = httpContext.HttpContext.GetUploadsBaseUrl() + '/';
+        foreach (var recipe in recipes)
+        {
+            recipe.Photo = baseUrl + recipe.Photo;
+        }
+
+        return recipes;
+    }
+
+    public async Task<RecipeDetailDto> GetRecipeAsync(int id)
+    {
+        var recipe = await repository.GetRecipeAsync(id);
+        DoesNotExistException.ThrowIfNull(recipe, $"Recipe with id: {id} does not exist.");
+        return recipe;
+    }
+
+    public async Task<Recipe> UpdateRecipeAsync(int id, RecipeUpdateDto payload)
+    {
+        var recipe = await repository.GetRecipeForUpdateAsync(id);
+        DoesNotExistException.ThrowIfNull(recipe, $"{nameof(Recipe)} with {nameof(Recipe.Id)}: {id} does not exist.");
+
+        if (recipe.Photo != null && payload.Photo != null)
+        {
+            DeleteUploadsFile(recipe.Photo);
+        }
+
+        if (recipe.VideoRecipe != null && payload.VideoRecipe != null)
+        {
+            DeleteUploadsFile(recipe.VideoRecipe);
+        }
+
+
+        mapper.Map(payload, recipe);
+        if (payload.Photo != null)
+            recipe.Photo = await SaveUploadsFileAsync(payload.Photo);
+        if (payload.VideoRecipe != null)
+            recipe.VideoRecipe = await SaveUploadsFileAsync(payload.VideoRecipe);
+        await repository.UpdateRecipeAsync();
+        return recipe;
+    }
+
+    private async Task CheckRecipeExistsAsync(int id)
+    {
+        var exists = await repository.CheckRecipeExistsAsync(id);
+        DoesNotExistException.ThrowIfNot(exists, $"{nameof(Recipe)} with {nameof(Recipe.Id)}: {id} does not exist.");
     }
 
     private async Task<string> HandleRecipeVideoAsync(IFormFile video)
@@ -78,17 +121,5 @@ public class RecipeService(RecipeRepository repository, CategoryRepository categ
     {
         var guid = Guid.NewGuid().ToString("N");
         return guid[..length];
-    }
-
-    private async Task DeleteUploadFileAsync(string fileName)
-    {
-        await Task.Run(() =>
-        {
-            var filePath = Path.Combine(webEnv.GetUploadBasePath(), fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-        });
     }
 }

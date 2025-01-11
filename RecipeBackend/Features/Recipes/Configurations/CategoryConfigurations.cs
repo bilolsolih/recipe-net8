@@ -18,8 +18,12 @@ public class CategoryConfigurations : IEntityTypeConfiguration<Category>
                .HasMaxLength(64)
                .IsRequired();
 
-        builder.Property(c => c.Photo)
+        builder.Property(c => c.Image)
                .IsRequired();
+
+        builder.Property(c => c.Main)
+               .IsRequired()
+               .HasDefaultValueSql("false");
         
         builder.Property(c => c.Created)
                .HasDefaultValueSql("CURRENT_TIMESTAMP")

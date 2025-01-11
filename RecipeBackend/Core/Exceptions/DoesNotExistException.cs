@@ -11,4 +11,20 @@ public class DoesNotExistException(string message) : Exception(message)
             throw new DoesNotExistException(message);
         }
     }
+    
+    public static void ThrowIf(bool value, string message)
+    {
+        if (value)
+        {
+            throw new DoesNotExistException(message);
+        }
+    }
+
+    public static void ThrowIfNot(bool value, string message)
+    {
+        if (!value)
+        {
+            throw new DoesNotExistException(message);
+        }
+    }
 }

@@ -16,8 +16,8 @@ public class Recipe
     public int CategoryId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string Photo { get; set; } = string.Empty;
-    public string VideoRecipe { get; set; } = string.Empty;
+    public string? Photo { get; set; }
+    public string? VideoRecipe { get; set; }
     public int TimeRequired { get; set; }
 
     public User User { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RecipeBackend.Core;
 using RecipeBackend.Core.Exceptions;
+using RecipeBackend.Features.Recipes.Filters;
 using RecipeBackend.Features.Recipes.Models;
 using RecipeBackend.Features.Recipes.Services;
 
@@ -19,9 +20,10 @@ public class MobileCategoryController(CategoryService service) : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> ListCategories()
+    public async Task<IActionResult> ListCategories([FromQuery] CategoryFilters filters)
     {
-        var categories = await service.ListCategoriesAsync();
+        // await Task.Delay(5000);
+        var categories = await service.ListCategoriesAsync(filters);
         return StatusCode(200, categories);
     }
 }

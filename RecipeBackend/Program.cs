@@ -8,6 +8,12 @@ using RecipeBackend.Features.Recipes;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    var config = builder.Configuration;
+    options.Configure(config.GetSection("Kestrel"));
+});
+
 builder.Services.AddControllers(options => options.Filters.Add<CoreExceptionsFilter>());
 builder.Services.AddEndpointsApiExplorer();
 
@@ -71,12 +77,13 @@ app.UseHttpsRedirection();
 app.UseAuthentication(); // added for the sake of the Authentication Feature
 app.UseAuthorization();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
 

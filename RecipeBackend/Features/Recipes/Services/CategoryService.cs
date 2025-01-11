@@ -2,6 +2,7 @@
 using RecipeBackend.Core;
 using RecipeBackend.Core.Exceptions;
 using RecipeBackend.Features.Recipes.DTOs;
+using RecipeBackend.Features.Recipes.Filters;
 using RecipeBackend.Features.Recipes.Models;
 using RecipeBackend.Features.Recipes.Repositories;
 
@@ -17,12 +18,17 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
             throw new AlreadyExistsException($"{nameof(Category)} with {nameof(payload.Title)}: {payload.Title} already exists.");
         }
 
-        var fileName = await SaveUploadsFileAsync(payload.Photo);
+        var fileName = await SaveUploadsFileAsync(payload.Image);
         var newCategory = new Category
         {
             Title = payload.Title,
-            Photo = fileName
+            Image = fileName,
+            Main = payload.Main
         };
+        if (payload.Main)
+        {
+            await repo.MakeAllCategoriesNonMain();
+        }
         return await repo.CreateCategoryAsync(newCategory);
     }
 
@@ -33,18 +39,19 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
         DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
 
         var categoryDetailDto = mapper.Map<CategoryDetailDto>(category);
-        categoryDetailDto.Photo = httpContext.HttpContext.GetUploadsBaseUrl() + '/' + categoryDetailDto.Photo;
+        categoryDetailDto.Image = httpContext.HttpContext.GetUploadsBaseUrl() + '/' + categoryDetailDto.Image;
         return categoryDetailDto;
     }
 
-    public async Task<ICollection<CategoryListDto>> ListCategoriesAsync()
+    public async Task<ICollection<CategoryListDto>> ListCategoriesAsync(CategoryFilters? filters = null)
     {
         ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(CategoryService)}");
-        var categories = await repo.ListCategoriesAsync();
-
+        var categories = await repo.ListCategoriesAsync(filters);
+        
+        var baseUrl = httpContext.HttpContext.GetUploadsBaseUrl() + '/';
         foreach (var category in categories)
         {
-            category.Photo = httpContext.HttpContext.GetUploadsBaseUrl() + '/' + category.Photo;
+            category.Image = baseUrl + category.Image;
         }
 
         return categories;
@@ -55,7 +62,7 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
         var category = await repo.GetCategoryByIdAsync(id);
 
         DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
-        AlreadyExistsException.ThrowIf(payload.Title == category.Title, $"{nameof(Category)} with {nameof(payload.Title)}: {payload.Title} already exists.");
+        // AlreadyExistsException.ThrowIf(payload.Title == category.Title, $"{nameof(Category)} with {nameof(payload.Title)}: {payload.Title} already exists.");
         
 
         if (payload.Title != null)
@@ -63,14 +70,22 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
             category.Title = payload.Title;
         }
 
-        if (payload.Photo != null)
+        if (payload.Image != null)
         {
-            DeleteUploadsFile(category.Photo);
-            var fileName = await SaveUploadsFileAsync(payload.Photo);
-            category.Photo = fileName;
+            DeleteUploadsFile(category.Image);
+            var fileName = await SaveUploadsFileAsync(payload.Image);
+            category.Image = fileName;
         }
 
-        await repo.UpdateCategoryAsync();
+        if (payload.Main != null)
+        {
+            if (payload.Main == true)
+            {
+                await repo.MakeAllCategoriesNonMain();
+            }
+        }
+
+        category = await repo.UpdateCategoryAsync(category);
 
         return category;
     }
@@ -80,7 +95,7 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
         var category = await repo.GetCategoryByIdAsync(id);
         DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
 
-        DeleteUploadsFile(category.Photo);
+        DeleteUploadsFile(category.Image);
         await repo.DeleteCategoryAsync(category);
     }
 }

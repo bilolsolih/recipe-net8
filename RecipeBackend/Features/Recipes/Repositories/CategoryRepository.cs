@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using RecipeBackend.Core;
 using RecipeBackend.Features.Recipes.DTOs;
+using RecipeBackend.Features.Recipes.Filters;
 using RecipeBackend.Features.Recipes.Models;
 
 namespace RecipeBackend.Features.Recipes.Repositories;
@@ -22,18 +22,28 @@ public class CategoryRepository(RecipeDbContext context, IMapper mapper)
         return category;
     }
 
-    public async Task<IList<CategoryListDto>> ListCategoriesAsync()
+    public async Task<IList<CategoryListDto>> ListCategoriesAsync(CategoryFilters? filters = null)
     {
-        var categories = await context.Categories
-                                      .ProjectTo<CategoryListDto>(mapper.ConfigurationProvider)
-                                      .OrderBy(c => c.Title)
-                                      .ToListAsync();
+        var filteredCategories = context.Categories.AsQueryable();
+
+        if (filters?.main != null)
+        {
+            filteredCategories = filteredCategories.Where(c => c.Main == filters.main);
+        }
+
+        var categories = await filteredCategories
+            .ProjectTo<CategoryListDto>(mapper.ConfigurationProvider)
+            .OrderBy(c => c.Title)
+            .ToListAsync();
+
         return categories;
     }
 
-    public async Task UpdateCategoryAsync()
+    public async Task<Category> UpdateCategoryAsync(Category category)
     {
+        context.Categories.Update(category);
         await context.SaveChangesAsync();
+        return category;
     }
 
     public async Task<bool> CheckCategoryExistsAsync(string? title = null, int? id = null)
@@ -62,5 +72,10 @@ public class CategoryRepository(RecipeDbContext context, IMapper mapper)
     {
         context.Categories.Remove(category);
         await context.SaveChangesAsync();
+    }
+
+    public async Task MakeAllCategoriesNonMain()
+    {
+        await context.Database.ExecuteSqlRawAsync("""UPDATE "Categories" SET "Main" = false WHERE "Main" = true""");
     }
 }

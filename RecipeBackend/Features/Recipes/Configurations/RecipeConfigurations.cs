@@ -20,7 +20,7 @@ public class RecipeConfigurations : IEntityTypeConfiguration<Recipe>
         builder.Property(r => r.Title).HasMaxLength(64).IsRequired();
         builder.Property(r => r.Description).HasMaxLength(1024).IsRequired();
         builder.Property(r => r.Photo).IsRequired();
-        builder.Property(r => r.VideoRecipe).IsRequired();
+        builder.Property(r => r.VideoRecipe).IsRequired(false);
         
         builder.Property(r => r.Created)
                .HasDefaultValueSql("CURRENT_TIMESTAMP")
