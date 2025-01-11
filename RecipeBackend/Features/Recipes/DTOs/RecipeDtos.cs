@@ -5,6 +5,7 @@ public class RecipeCreateDto
     public int CategoryId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
+
     public int TimeRequired { get; set; }
     // public IFormFile Photo { get; set; }
     // public IFormFile VideoRecipe { get; set; }
@@ -26,6 +27,7 @@ public class RecipeListDto
 
 public class RecipeDetailDto
 {
+    public int Id { get; set; }
     public int CategoryId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
