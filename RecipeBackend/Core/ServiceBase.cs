@@ -5,8 +5,8 @@ namespace RecipeBackend.Core;
 
 public class ServiceBase(string folderName, IWebHostEnvironment webEnv)
 {
-    protected string UploadsBaseAbsolutePath { get; set; } = webEnv.GetUploadBasePath();
-    protected string FolderName { get; set; } = folderName;
+    private string UploadsBaseAbsolutePath { get; set; } = webEnv.GetUploadBasePath();
+    private string FolderName { get; set; } = folderName;
 
 
     protected async Task<string> SaveUploadsFileAsync(IFormFile file)
