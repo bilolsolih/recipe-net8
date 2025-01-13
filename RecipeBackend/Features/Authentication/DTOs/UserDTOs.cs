@@ -17,13 +17,18 @@ public class UserCreateDto
     public required string FullName { get; set; }
     public required string Email { get; set; }
     public required string PhoneNumber { get; set; }
-    public required object BirthDate { get; set; }
+    public required string BirthDate { get; set; }
     public required string Password { get; set; }
 }
 
-public class UserCompleteDto
+public class UserUpdateDto
 {
-    public FormFile ProfilePhoto { get; set; }
-    public string Gender { get; set; }
-    public string Bio { get; set; }
+    public string? Gender { get; set; }
+    public string? Bio { get; set; }
+    
+    public string? Username { get; set; }
+    public string? FullName { get; set; }
+    public string? Email { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? BirthDate { get; set; }
 }

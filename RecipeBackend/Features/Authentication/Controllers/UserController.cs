@@ -30,9 +30,18 @@ public class UserController(UserService service, TokenService tokenService) : Co
         var user = await service.CreateUserAsync(payload);
         return StatusCode(statusCode: 201, user);
     }
-    //
-    // [HttpPatch("complete/{id:int}")]
-    // public async Task<IActionResult> Complete(UserCompleteDto payload)
-    // {
-    // }
+
+    [HttpPatch("update/{id:int}")]
+    public async Task<IActionResult> Update(int id, UserUpdateDto payload)
+    {
+        var user = await service.UpdateUserAsync(id, payload);
+        return StatusCode(200, user);
+    }
+
+    [HttpPatch("upload/{id:int}")]
+    public async Task<IActionResult> UploadProfilePhoto(int id, IFormFile profilePhoto)
+    {
+        var user = await service.UploadProfilePhotoAsync(id, profilePhoto);
+        return StatusCode(200, user);
+    }
 }
