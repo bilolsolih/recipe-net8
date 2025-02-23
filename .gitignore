@@ -2,6 +2,8 @@
 bin/
 obj/
 uploads/
+publish/
+publish.zip
 
 # User-specific files
 *.user
@@ -44,8 +46,6 @@ node_modules/
 *.mdf
 *.ldf
 
-# Entity Framework Migrations
-Migrations/
 
 # Test results
 TestResults/

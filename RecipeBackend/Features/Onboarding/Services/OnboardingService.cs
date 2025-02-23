@@ -8,7 +8,8 @@ using RecipeBackend.Features.Recipes;
 
 namespace RecipeBackend.Features.Onboarding.Services;
 
-public class OnboardingService(OnboardingRepository repo, IMapper mapper, IWebHostEnvironment wEnv, IHttpContextAccessor httpContext) : ServiceBase("onboarding_pages", wEnv)
+public class OnboardingService(OnboardingRepository repo, IMapper mapper, IWebHostEnvironment wEnv, IHttpContextAccessor httpContextAccessor)
+    : ServiceBase("onboarding_pages", wEnv, httpContextAccessor)
 {
     public async Task<OnboardingPage> CreateAsync([FromForm] OnboardingPageCreateDto payload)
     {
@@ -23,14 +24,13 @@ public class OnboardingService(OnboardingRepository repo, IMapper mapper, IWebHo
 
     public async Task<IList<OnboardingPage>> ListAsync()
     {
-        ArgumentNullException.ThrowIfNull(httpContext.HttpContext);
         var onboardingPages = await repo.ListAsync();
 
         foreach (var onboardingPage in onboardingPages)
         {
-            onboardingPage.Picture = httpContext.HttpContext.GetUploadsBaseUrl() + '/' + onboardingPage.Picture;
+            onboardingPage.Picture = $"{BaseUrl}/{onboardingPage.Picture}";
         }
-        
+
         return onboardingPages;
     }
 

@@ -19,8 +19,11 @@ public class Recipe
     public string? Photo { get; set; }
     public string? VideoRecipe { get; set; }
     public int TimeRequired { get; set; }
+    public bool IsTrending { set; get; }
+    public double Rating { get; set; }
 
     public User User { get; set; }
+    public ICollection<User> LikedUsers { get; set; } = new List<User>();
     public Category Category { get; set; }
     public ICollection<Ingredient>? Ingredients { get; set; }
     public ICollection<Instruction>? Instructions { get; set; }

@@ -7,8 +7,6 @@ public class RecipeCreateDto
     public string Description { get; set; }
 
     public int TimeRequired { get; set; }
-    // public IFormFile Photo { get; set; }
-    // public IFormFile VideoRecipe { get; set; }
 
     public IList<InstructionDto> Instructions { get; set; } = new List<InstructionDto>();
     public IList<IngredientDto> Ingredients { get; set; } = new List<IngredientDto>();
@@ -22,7 +20,7 @@ public class RecipeListDto
     public string Description { get; set; }
     public string? Photo { get; set; }
     public int TimeRequired { get; set; }
-    public UserForRecipeDetailDto User { get; set; }
+    public double Rating { get; set; }
 }
 
 public class RecipeDetailDto
@@ -34,6 +32,7 @@ public class RecipeDetailDto
     public string? Photo { get; set; }
     public string? VideoRecipe { get; set; }
     public int TimeRequired { get; set; }
+    public double Rating { get; set; }
     public UserForRecipeDetailDto User { get; set; }
 
     public IList<InstructionDto> Instructions { get; set; } = new List<InstructionDto>();

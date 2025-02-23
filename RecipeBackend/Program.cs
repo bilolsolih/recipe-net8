@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using RecipeBackend;
@@ -55,7 +56,8 @@ builder.Services.RegisterAuthenticationFeature(builder.Configuration); // Regist
 builder.Services.RegisterOnboardingFeature(builder.Configuration);
 builder.Services.RegisterRecipesFeature(builder.Configuration);
 
-builder.Services.AddNpgsql<RecipeDbContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
+// builder.Services.AddNpgsql<RecipeDbContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSqlite<RecipeDbContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 var app = builder.Build();
 
@@ -86,5 +88,11 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapControllers();
+
+// using (var scope = app.Services.CreateScope())
+// {
+//     var dbContext = scope.ServiceProvider.GetRequiredService<RecipeDbContext>();
+//     dbContext.Database.Migrate(); // Applies migrations and creates the database if not exists
+// }
 
 app.Run();

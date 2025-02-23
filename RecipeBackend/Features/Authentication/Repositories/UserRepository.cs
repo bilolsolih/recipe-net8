@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RecipeBackend.Core;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using RecipeBackend.Features.Authentication.DTOs;
+using RecipeBackend.Features.Authentication.Filters;
 using RecipeBackend.Features.Authentication.Models;
 
 namespace RecipeBackend.Features.Authentication.Repositories;
 
-public class UserRepository(RecipeDbContext context)
+public class UserRepository(RecipeDbContext context, IMapper mapper)
 {
     public async Task<User> CreateUser(User user)
     {
@@ -42,5 +45,19 @@ public class UserRepository(RecipeDbContext context)
             u => u.Email == value || u.PhoneNumber == value || u.Username == value
         );
         return exists;
+    }
+
+    public async Task<List<TopChefSmall>> GetTopChefsAsync(UserFilters? filters)
+    {
+        var topChefs = context.Users.AsQueryable();
+        if (filters != null)
+        {
+            if (filters is { Page: not null, Limit: not null }) topChefs = topChefs.Skip((int)((filters.Page - 1) * filters.Limit));
+            if (filters.Limit != null) topChefs = topChefs.Take((int)filters.Limit);
+        }
+
+        var results = await topChefs.ProjectTo<TopChefSmall>(mapper.ConfigurationProvider).ToListAsync();
+
+        return results;
     }
 }

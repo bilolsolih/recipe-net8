@@ -8,11 +8,11 @@ using RecipeBackend.Features.Recipes.Repositories;
 
 namespace RecipeBackend.Features.Recipes.Services;
 
-public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEnvironment webEnv, IHttpContextAccessor httpContext) : ServiceBase("categories", webEnv)
+public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEnvironment webEnv, IHttpContextAccessor httpContextAccessor)
+    : ServiceBase("categories", webEnv, httpContextAccessor)
 {
     public async Task<Category> CreateCategoryAsync(CategoryCreateDto payload)
     {
-        ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(CategoryService)}");
         if (await repo.CheckCategoryExistsAsync(title: payload.Title))
         {
             throw new AlreadyExistsException($"{nameof(Category)} with {nameof(payload.Title)}: {payload.Title} already exists.");
@@ -29,29 +29,27 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
         {
             await repo.MakeAllCategoriesNonMain();
         }
+
         return await repo.CreateCategoryAsync(newCategory);
     }
 
     public async Task<CategoryDetailDto?> GetCategoryByIdAsync(int id)
     {
-        ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(CategoryService)}");
         var category = await repo.GetCategoryByIdAsync(id);
         DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
 
         var categoryDetailDto = mapper.Map<CategoryDetailDto>(category);
-        categoryDetailDto.Image = httpContext.HttpContext.GetUploadsBaseUrl() + '/' + categoryDetailDto.Image;
+        categoryDetailDto.Image = $"{BaseUrl}/{categoryDetailDto.Image}";
         return categoryDetailDto;
     }
 
     public async Task<ICollection<CategoryListDto>> ListCategoriesAsync(CategoryFilters? filters = null)
     {
-        ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(CategoryService)}");
         var categories = await repo.ListCategoriesAsync(filters);
-        
-        var baseUrl = httpContext.HttpContext.GetUploadsBaseUrl() + '/';
+
         foreach (var category in categories)
         {
-            category.Image = baseUrl + category.Image;
+            category.Image = $"{BaseUrl}/{category.Image}";
         }
 
         return categories;
@@ -63,7 +61,7 @@ public class CategoryService(CategoryRepository repo, IMapper mapper, IWebHostEn
 
         DoesNotExistException.ThrowIfNull(category, $"{nameof(Category)} with {nameof(Category.Id)}: {id} does not exist.");
         // AlreadyExistsException.ThrowIf(payload.Title == category.Title, $"{nameof(Category)} with {nameof(payload.Title)}: {payload.Title} already exists.");
-        
+
 
         if (payload.Title != null)
         {

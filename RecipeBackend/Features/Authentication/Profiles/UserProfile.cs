@@ -23,5 +23,11 @@ public class UserProfile : Profile
             .ForMember(dest => dest.Presentation, opts => opts.MapFrom(src => src.Bio))
             .ForMember(dest => dest.BirthDate, opts => opts.MapFrom(src => DateOnly.Parse(src.BirthDate!)))
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+        CreateMap<User, TopChefSmall>()
+            .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.ProfilePhoto));
+
+        CreateMap<User, UserDetailDto>()
+            .ForMember(dest => dest.RecipesCount, opt => opt.MapFrom(src => src.Recipes.Count));
     }
 }

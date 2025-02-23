@@ -18,19 +18,21 @@ public class RecipeProfile : Profile
             .ForMember(dest => dest.Reviews, opt => opt.Ignore())
             .ForMember(dest => dest.Created, opt => opt.Ignore())
             .ForMember(dest => dest.Updated, opt => opt.Ignore())
+            .ForMember(dest => dest.LikedUsers, opt => opt.Ignore())
             .ForMember(dest => dest.Ingredients, opt => opt.MapFrom(src => src.Ingredients))
             .ForMember(dest => dest.Instructions, opt => opt.MapFrom(src => src.Instructions));
 
         CreateMap<Recipe, RecipeDetailDto>()
             .ForMember(dest => dest.Ingredients, opt => opt.MapFrom(src => src.Ingredients))
             .ForMember(dest => dest.Instructions, opt => opt.MapFrom(src => src.Instructions));
+        
         CreateMap<RecipeUpdateDto, Recipe>()
             .ForAllMembers(opts => opts.Condition(
-                (src, dest, srcMember) => 
-                    srcMember != null && 
+                (src, dest, srcMember) =>
+                    srcMember != null &&
                     !(srcMember is string str && string.IsNullOrWhiteSpace(str)) &&
                     !(srcMember.GetType().IsValueType && srcMember.Equals(Activator.CreateInstance(srcMember.GetType())))
-                    ));
+            ));
         CreateMap<IngredientCreateDto, Ingredient>();
 
         CreateMap<Instruction, InstructionDto>();

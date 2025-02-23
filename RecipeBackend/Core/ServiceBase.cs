@@ -3,10 +3,12 @@ using RecipeBackend.Features.Recipes;
 
 namespace RecipeBackend.Core;
 
-public class ServiceBase(string folderName, IWebHostEnvironment webEnv)
+public class ServiceBase(string folderName, IWebHostEnvironment webEnv, IHttpContextAccessor httpContextAccessor)
 {
     private string UploadsBaseAbsolutePath { get; set; } = webEnv.GetUploadBasePath();
     private string FolderName { get; set; } = folderName;
+    protected string BaseUrl { get; set; } = httpContextAccessor.HttpContext!.GetUploadsBaseUrl();
+    protected HttpContext HttpContext = httpContextAccessor.HttpContext!;
 
 
     protected async Task<string> SaveUploadsFileAsync(IFormFile file)

@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using RecipeBackend.Core;
 using RecipeBackend.Core.Exceptions;
+using RecipeBackend.Core.Filters;
 using RecipeBackend.Features.Recipes.DTOs;
 using RecipeBackend.Features.Recipes.Filters;
 using RecipeBackend.Features.Recipes.Models;
@@ -13,45 +16,80 @@ public class RecipeService(
     CategoryRepository categoryRepo,
     IMapper mapper,
     IWebHostEnvironment webEnv,
-    IHttpContextAccessor httpContext)
-    : ServiceBase("recipes", webEnv)
+    IHttpContextAccessor httpContextAccessor)
+    : ServiceBase("recipes", webEnv, httpContextAccessor)
 {
     public async Task<Recipe> CreateRecipeAsync(RecipeCreateDto payload, int userId)
     {
         if (!await categoryRepo.CheckCategoryExistsAsync(id: payload.CategoryId))
         {
-            throw new DoesNotExistException($"{nameof(Category)} with {nameof(Category.Id)}: {payload.CategoryId} does not exist.");
+            throw new DoesNotExistException(
+                $"{nameof(Category)} with {nameof(Category.Id)}: {payload.CategoryId} does not exist.");
         }
 
         var newRecipe = mapper.Map<Recipe>(payload);
 
         newRecipe.UserId = userId;
 
+
         return await repository.CreateRecipeAsync(newRecipe);
     }
 
-    public async Task<List<RecipeListDto>> ListRecipesAsync(RecipeFilters? filters = null)
+    public async Task<RecipeListDto?> GetTrendingRecipeAsync()
     {
-        ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(RecipeService)}");
+        var trendingRecipe = await repository.GetTrendingRecipeAsync();
+        if (trendingRecipe?.Photo != null) trendingRecipe.Photo = $"{BaseUrl}/{trendingRecipe.Photo}";
+        return trendingRecipe;
+    }
+
+    public async Task<List<RecipeListDto>> ListTrendingRecipesAsync(PaginationFilters? filters)
+    {
+        var trendingRecipes = await repository.ListTrendingRecipesAsync(filters);
+        trendingRecipes.ForEach(r => r.Photo = r.Photo != null ? $"{BaseUrl}/{r.Photo}" : r.Photo);
+        return trendingRecipes;
+    }
+
+    public async Task<List<RecipeListDto>> ListRecipesAsync(RecipeFilters? filters)
+    {
         var recipes = await repository.ListRecipesAsync(filters);
-        var baseUrl = httpContext.HttpContext.GetUploadsBaseUrl() + '/';
-        foreach (var recipe in recipes)
+        recipes.ForEach(r => r.Photo = r.Photo != null ? $"{BaseUrl}/{r.Photo}" : r.Photo);
+
+        var totalCount = await repository.GetRecipeCountAsync();
+        Dictionary<string, dynamic> metadata = new Dictionary<string, dynamic>()
         {
-            if (recipe.Photo != null)
-                recipe.Photo = baseUrl + recipe.Photo;
+            { "TotalCount", totalCount },
+        };
+
+        if (filters?.Limit != null)
+        {
+            metadata.Add("TotalPages", (int)Math.Ceiling((double)(totalCount / filters.Limit)!));
         }
+
+        HttpContext.Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
+
         return recipes;
+    }
+
+    public async Task<List<RecipeListDto>> ListMyRecipesAsync(int userId, PaginationFilters? filters)
+    {
+        var myRecipes = await repository.ListMyRecipesAsync(userId, filters);
+        myRecipes.ForEach(r => r.Photo = r.Photo != null ? $"{BaseUrl}/{r.Photo}" : r.Photo);
+        return myRecipes;
     }
 
     public async Task<RecipeDetailDto> GetRecipeAsync(int id)
     {
-        ArgumentNullException.ThrowIfNull(httpContext.HttpContext, $"Error accessing the HttpContext inside the {nameof(RecipeService)}");
         var recipe = await repository.GetRecipeAsync(id);
         DoesNotExistException.ThrowIfNull(recipe, $"Recipe with id: {id} does not exist.");
         if (recipe.Photo != null)
-            recipe.Photo = httpContext.HttpContext.GetUploadsBaseUrl() + '/' + recipe.Photo;
+            recipe.Photo = $"{BaseUrl}/{recipe.Photo}";
+
+        if (recipe.User.ProfilePhoto != null)
+            recipe.User.ProfilePhoto = $"{BaseUrl}/{recipe.User.ProfilePhoto}";
+
         return recipe;
     }
+
 
     public async Task<Recipe> UpdateRecipeAsync(int id, RecipeUpdateDto payload)
     {

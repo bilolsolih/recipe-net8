@@ -29,10 +29,9 @@ public static class AuthenticationExtensions
                 ClockSkew = TimeSpan.Zero
             };
         });
-
+        services.AddScoped<UserRepository>();
         services.AddScoped<TokenService>();
         services.AddScoped<UserService>();
-        services.AddScoped<UserRepository>();
 
         services.AddAutoMapper(typeof(Program));
     }
