@@ -30,6 +30,7 @@
       <Folder Include="Migrations\" />
       <Folder Include="uploads\categories\" />
       <Folder Include="uploads\recipes\" />
+      <Folder Include="uploads\reviews\" />
     </ItemGroup>
 
 </Project>

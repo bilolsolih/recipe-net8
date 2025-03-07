@@ -27,7 +27,7 @@ public class Recipe
     public Category Category { get; set; }
     public ICollection<Ingredient>? Ingredients { get; set; }
     public ICollection<Instruction>? Instructions { get; set; }
-    public ICollection<Review>? Reviews { get; set; }
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }

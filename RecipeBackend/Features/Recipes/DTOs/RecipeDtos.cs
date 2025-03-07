@@ -23,6 +23,20 @@ public class RecipeListDto
     public double Rating { get; set; }
 }
 
+public class RecipeListCommunityDto
+{
+    public required int Id { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public string? Photo { get; set; }
+    public required int TimeRequired { get; set; }
+    public double Rating { get; set; }
+    public int ReviewsCount { get; set; }
+    public DateTime Created { get; set; }
+
+    public required UserForRecipeDetailDto User { get; set; }
+}
+
 public class RecipeDetailDto
 {
     public int Id { get; set; }
@@ -35,8 +49,8 @@ public class RecipeDetailDto
     public double Rating { get; set; }
     public UserForRecipeDetailDto User { get; set; }
 
-    public IList<InstructionDto> Instructions { get; set; } = new List<InstructionDto>();
-    public IList<IngredientDto> Ingredients { get; set; } = new List<IngredientDto>();
+    public IList<InstructionDto> Instructions { get; init; } = new List<InstructionDto>();
+    public IList<IngredientDto> Ingredients { get; init; } = new List<IngredientDto>();
 }
 
 public class RecipeUpdateDto
@@ -54,7 +68,8 @@ public class UserForRecipeDetailDto
     public int Id { get; set; }
     public string? ProfilePhoto { get; set; }
     public string Username { get; set; }
-    public string FullName { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
 }
 
 public class InstructionDto

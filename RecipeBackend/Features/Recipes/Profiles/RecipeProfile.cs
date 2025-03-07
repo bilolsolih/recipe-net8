@@ -10,6 +10,8 @@ public class RecipeProfile : Profile
     public RecipeProfile()
     {
         CreateMap<Recipe, RecipeListDto>();
+        CreateMap<Recipe, RecipeListCommunityDto>()
+            .ForMember(dest => dest.ReviewsCount, opt => opt.MapFrom(src => src.Reviews.Count));
         CreateMap<RecipeCreateDto, Recipe>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.UserId, opt => opt.Ignore())
@@ -22,16 +24,15 @@ public class RecipeProfile : Profile
             .ForMember(dest => dest.Ingredients, opt => opt.MapFrom(src => src.Ingredients))
             .ForMember(dest => dest.Instructions, opt => opt.MapFrom(src => src.Instructions));
 
-        CreateMap<Recipe, RecipeDetailDto>()
-            .ForMember(dest => dest.Ingredients, opt => opt.MapFrom(src => src.Ingredients))
-            .ForMember(dest => dest.Instructions, opt => opt.MapFrom(src => src.Instructions));
-        
+        CreateMap<Recipe, RecipeDetailDto>();
+
         CreateMap<RecipeUpdateDto, Recipe>()
             .ForAllMembers(opts => opts.Condition(
                 (src, dest, srcMember) =>
                     srcMember != null &&
                     !(srcMember is string str && string.IsNullOrWhiteSpace(str)) &&
-                    !(srcMember.GetType().IsValueType && srcMember.Equals(Activator.CreateInstance(srcMember.GetType())))
+                    !(srcMember.GetType().IsValueType &&
+                      srcMember.Equals(Activator.CreateInstance(srcMember.GetType())))
             ));
         CreateMap<IngredientCreateDto, Ingredient>();
 

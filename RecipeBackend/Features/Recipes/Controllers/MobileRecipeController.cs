@@ -20,10 +20,18 @@ public class MobileRecipeController(RecipeService service) : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> ListRecipes([FromQuery] RecipeFilters? filters)
+    public async Task<IActionResult> ListRecipes([FromQuery] RecipeFilters filters)
     {
         var recipes = await service.ListRecipesAsync(filters);
         return StatusCode(200, recipes);
+    }
+
+    [HttpGet("community/list")]
+    public async Task<ActionResult<IEnumerable<RecipeListCommunityDto>>> ListCommunityRecipes(
+        [FromQuery] RecipeFilters filters)
+    {
+        var recipes = await service.ListCommunityRecipesAsync(filters);
+        return Ok(recipes);
     }
 
     [HttpGet("trending-recipe")]
@@ -34,17 +42,17 @@ public class MobileRecipeController(RecipeService service) : ControllerBase
     }
 
     [HttpGet("trending-recipes")]
-    public async Task<IActionResult> ListTrendingRecipes([FromQuery]PaginationFilters? filters)
+    public async Task<IActionResult> ListTrendingRecipes([FromQuery] PaginationFilters? filters)
     {
         var trendingRecipes = await service.ListTrendingRecipesAsync(filters);
         return Ok(trendingRecipes);
     }
 
     [HttpGet("detail/{id:int}")]
-    public async Task<IActionResult> GetRecipe(int id)
+    public async Task<ActionResult<RecipeDetailDto>> GetRecipe(int id)
     {
         var recipe = await service.GetRecipeAsync(id);
-        return StatusCode(200, recipe);
+        return Ok(recipe);
     }
 
     [HttpPatch("update/{id:int}")]

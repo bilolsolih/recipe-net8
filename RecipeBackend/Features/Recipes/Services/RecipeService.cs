@@ -49,7 +49,7 @@ public class RecipeService(
         return trendingRecipes;
     }
 
-    public async Task<List<RecipeListDto>> ListRecipesAsync(RecipeFilters? filters)
+    public async Task<List<RecipeListDto>> ListRecipesAsync(RecipeFilters filters)
     {
         var recipes = await repository.ListRecipesAsync(filters);
         recipes.ForEach(r => r.Photo = r.Photo != null ? $"{BaseUrl}/{r.Photo}" : r.Photo);
@@ -69,6 +69,34 @@ public class RecipeService(
 
         return recipes;
     }
+    
+    
+    public async Task<List<RecipeListCommunityDto>> ListCommunityRecipesAsync(RecipeFilters filters)
+    {
+        var recipes = await repository.ListCommunityRecipesAsync(filters);
+        recipes.ForEach(r =>
+        {
+            r.Photo = r.Photo != null ? $"{BaseUrl}/{r.Photo}" : string.Empty;
+            r.User.ProfilePhoto = r.User.ProfilePhoto != null ? $"{BaseUrl}/{r.User.ProfilePhoto}" : string.Empty;
+        });
+
+        var totalCount = await repository.GetRecipeCountAsync();
+        var metadata = new Dictionary<string, dynamic>
+        {
+            { "TotalCount", totalCount }
+        };
+
+        if (filters.Limit != null)
+        {
+            metadata.Add("TotalPages", (int)Math.Ceiling((double)(totalCount / filters.Limit)!));
+        }
+
+        HttpContext.Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
+
+        return recipes;
+    }
+    
+    
 
     public async Task<List<RecipeListDto>> ListMyRecipesAsync(int userId, PaginationFilters? filters)
     {
@@ -86,6 +114,9 @@ public class RecipeService(
 
         if (recipe.User.ProfilePhoto != null)
             recipe.User.ProfilePhoto = $"{BaseUrl}/{recipe.User.ProfilePhoto}";
+        
+        if (recipe.VideoRecipe != null)
+            recipe.VideoRecipe = $"{BaseUrl}/{recipe.VideoRecipe}";
 
         return recipe;
     }

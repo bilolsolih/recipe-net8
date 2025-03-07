@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options =>
 {
     var config = builder.Configuration;
+    options.Limits.MaxRequestBodySize = int.MaxValue;
+    options.Listen(IPAddress.Parse("0.0.0.0"), 8888);
     options.Configure(config.GetSection("Kestrel"));
 });
 
@@ -69,7 +72,7 @@ if (!Directory.Exists(uploadsPath))
 }
 
 app.UseStaticFiles(new StaticFileOptions
-{
+{  
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "uploads")),
     RequestPath = "/uploads"
 });

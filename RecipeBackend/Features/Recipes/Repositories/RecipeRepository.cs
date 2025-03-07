@@ -62,16 +62,23 @@ public class RecipeRepository(RecipeDbContext context, IMapper mapper)
             {
                 filteredRecipes = filters.Order.ToLower() switch
                 {
-                    "title" => (bool)filters.Descending! ? filteredRecipes.OrderByDescending(r => r.Title) : filteredRecipes.OrderBy(r => r.Title),
-                    "date" => (bool)filters.Descending! ? filteredRecipes.OrderByDescending(r => r.Created) : filteredRecipes.OrderBy(r => r.Created),
-                    _ => filteredRecipes.OrderBy(r => r.Title)
+                    "title" => (bool)filters.Descending!
+                        ? filteredRecipes.OrderByDescending(r => r.Title)
+                        : filteredRecipes.OrderBy(r => r.Title),
+                    "date" => (bool)filters.Descending!
+                        ? filteredRecipes.OrderByDescending(r => r.Created)
+                        : filteredRecipes.OrderBy(r => r.Created),
+                    // _ => filteredRecipes.OrderBy(r => r.Title)
                 };
             }
 
             if (filters.UserId != null) filteredRecipes = filteredRecipes.Where(r => r.UserId == filters.UserId);
-            if (filters.Category != null) filteredRecipes = filteredRecipes.Where(r => r.CategoryId == filters.Category);
-            if (filters.IsTrending != null) filteredRecipes = filteredRecipes.Where(r => r.IsTrending == filters.IsTrending);
-            if (filters is { Page: not null, Limit: not null }) filteredRecipes = filteredRecipes.Skip((int)((filters.Page - 1) * filters.Limit));
+            if (filters.Category != null)
+                filteredRecipes = filteredRecipes.Where(r => r.CategoryId == filters.Category);
+            if (filters.IsTrending != null)
+                filteredRecipes = filteredRecipes.Where(r => r.IsTrending == filters.IsTrending);
+            if (filters is { Page: not null, Limit: not null })
+                filteredRecipes = filteredRecipes.Skip((int)((filters.Page - 1) * filters.Limit));
             if (filters.Limit != null) filteredRecipes = filteredRecipes.Take((int)filters.Limit);
         }
 
@@ -83,13 +90,55 @@ public class RecipeRepository(RecipeDbContext context, IMapper mapper)
         return recipes;
     }
 
+    public async Task<List<RecipeListCommunityDto>> ListCommunityRecipesAsync(RecipeFilters filters)
+    {
+        var filteredRecipes = context.Recipes.AsQueryable();
+
+        if (filters.Order != null)
+        {
+            filteredRecipes = filters.Order.ToLower() switch
+            {
+                "title" => (bool)filters.Descending!
+                    ? filteredRecipes.OrderByDescending(r => r.Title)
+                    : filteredRecipes.OrderBy(r => r.Title),
+                "date" => (bool)filters.Descending!
+                    ? filteredRecipes.OrderByDescending(r => r.Created)
+                    : filteredRecipes.OrderBy(r => r.Created),
+                "rating" => (bool)filters.Descending!
+                    ? filteredRecipes.OrderByDescending(r => r.Rating)
+                    : filteredRecipes.OrderBy(r => r.Rating),
+                _ => filteredRecipes.OrderBy(r => r.Title)
+            };
+        }
+
+        if (filters.IsTrending != null)
+            filteredRecipes = filteredRecipes.Where(r => r.IsTrending == filters.IsTrending);
+        if (filters is { Page: not null, Limit: not null })
+            filteredRecipes = filteredRecipes.Skip((int)((filters.Page - 1) * filters.Limit));
+        if (filters.Limit != null) filteredRecipes = filteredRecipes.Take((int)filters.Limit);
+
+
+        var recipes = await filteredRecipes
+            .ProjectTo<RecipeListCommunityDto>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return recipes;
+    }
+
     public async Task<List<RecipeListDto>> ListMyRecipesAsync(int userId, PaginationFilters? filters)
     {
         var myRecipes = context.Recipes.Where(r => r.UserId == userId).AsQueryable();
         if (filters != null)
         {
-            if (filters.Page != null && filters.Limit != null) myRecipes = myRecipes.Skip((int)((filters.Page - 1) * filters.Limit));
-            if (filters.Limit != null) myRecipes = myRecipes.Take((int)filters.Limit);
+            if (filters is { Page: not null, Limit: not null })
+            {
+                myRecipes = myRecipes.Skip((int)((filters.Page - 1) * filters.Limit));
+            }
+
+            if (filters.Limit != null)
+            {
+                myRecipes = myRecipes.Take((int)filters.Limit);
+            }
         }
 
         var result = await myRecipes.ProjectTo<RecipeListDto>(mapper.ConfigurationProvider).ToListAsync();
