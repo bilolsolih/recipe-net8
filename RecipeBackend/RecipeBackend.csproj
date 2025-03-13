@@ -33,4 +33,13 @@
       <Folder Include="uploads\reviews\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="RecipeBackendLatest\web.config" />
+      <_ContentIncludedByDefault Remove="RecipeBackendLatest\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="RecipeBackendLatest\appsettings.json" />
+      <_ContentIncludedByDefault Remove="RecipeBackendLatest\RecipeBackend.deps.json" />
+      <_ContentIncludedByDefault Remove="RecipeBackendLatest\RecipeBackend.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="RecipeBackendLatest\RecipeBackend.staticwebassets.endpoints.json" />
+    </ItemGroup>
+
 </Project>

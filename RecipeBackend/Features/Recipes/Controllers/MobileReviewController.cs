@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -39,11 +40,22 @@ public class MobileReviewController(RecipeDbContext context, IMapper mapper, IWe
     }
 
     [HttpGet("list")]
-    public async Task<ActionResult> ListReviews()
+    public async Task<ActionResult> ListReviews([FromQuery] int? recipeId)
     {
-        var reviews = await context.Reviews.ToListAsync();
+        var reviewsQuery = context.Reviews.AsQueryable();
+        if (recipeId != null)
+        {
+            reviewsQuery = reviewsQuery.Where(review => review.RecipeId == recipeId);
+        }
+
+        var reviews = await reviewsQuery.ProjectTo<ReviewDetailDto>(mapper.ConfigurationProvider).ToListAsync();
         var baseUrl = HttpContext.GetUploadsBaseUrl();
-        reviews.ForEach(review => review.Image = review.Image != null ? baseUrl + review.Image : string.Empty);
+        reviews.ForEach(review =>
+        {
+            review.Image = review.Image != null ? baseUrl + review.Image : string.Empty;
+            review.User.ProfilePhoto =
+                review.User.ProfilePhoto != null ? baseUrl + '/' + review.User.ProfilePhoto : string.Empty;
+        });
         return Ok(reviews);
     }
 }

@@ -47,10 +47,21 @@ public class RecipeDetailDto
     public string? VideoRecipe { get; set; }
     public int TimeRequired { get; set; }
     public double Rating { get; set; }
+    public int ReviewsCount { get; set; }
     public UserForRecipeDetailDto User { get; set; }
 
     public IList<InstructionDto> Instructions { get; init; } = new List<InstructionDto>();
     public IList<IngredientDto> Ingredients { get; init; } = new List<IngredientDto>();
+}
+
+public class RecipeDetailReviewsDto
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string? Photo { get; set; }
+    public double Rating { get; set; }
+    public int ReviewsCount { get; set; }
+    public UserForRecipeDetailDto User { get; set; }
 }
 
 public class RecipeUpdateDto

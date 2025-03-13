@@ -96,7 +96,13 @@ public class RecipeService(
         return recipes;
     }
     
-    
+    public async Task<RecipeDetailReviewsDto> GetRecipeForReviews(int id)
+    {
+        var recipe = await repository.GetRecipeForReviews(id);
+        return recipe;
+    }
+
+
 
     public async Task<List<RecipeListDto>> ListMyRecipesAsync(int userId, PaginationFilters? filters)
     {

@@ -10,6 +10,8 @@ public class RecipeProfile : Profile
     public RecipeProfile()
     {
         CreateMap<Recipe, RecipeListDto>();
+        CreateMap<Recipe, RecipeDetailReviewsDto>()
+            .ForMember(dest => dest.ReviewsCount, opt => opt.MapFrom(src => src.Reviews.Count));
         CreateMap<Recipe, RecipeListCommunityDto>()
             .ForMember(dest => dest.ReviewsCount, opt => opt.MapFrom(src => src.Reviews.Count));
         CreateMap<RecipeCreateDto, Recipe>()
