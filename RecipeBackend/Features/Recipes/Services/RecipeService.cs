@@ -99,6 +99,15 @@ public class RecipeService(
     public async Task<RecipeDetailReviewsDto> GetRecipeForReviews(int id)
     {
         var recipe = await repository.GetRecipeForReviews(id);
+        if (recipe.Photo != null)
+        {
+            recipe.Photo = $"{BaseUrl}/{recipe.Photo}";
+        }
+
+        if (recipe.User.ProfilePhoto != null)
+        {
+            recipe.User.ProfilePhoto = $"{BaseUrl}/{recipe.User.ProfilePhoto}";
+        }
         return recipe;
     }
 
