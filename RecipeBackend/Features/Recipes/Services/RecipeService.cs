@@ -69,8 +69,8 @@ public class RecipeService(
 
         return recipes;
     }
-    
-    
+
+
     public async Task<List<RecipeListCommunityDto>> ListCommunityRecipesAsync(RecipeFilters filters)
     {
         var recipes = await repository.ListCommunityRecipesAsync(filters);
@@ -95,13 +95,33 @@ public class RecipeService(
 
         return recipes;
     }
-    
-    public async Task<RecipeDetailReviewsDto> GetRecipeForReviews(int id)
+
+    public async Task<RecipeCreateReviewDto> GetRecipeForCreateReview(int id)
     {
-        var recipe = await repository.GetRecipeForReviews(id);
+        var recipe = await repository.GetRecipeForCreateReview(id);
+        if (recipe.Photo != null)
+        {
+            recipe.Photo = $"{BaseUrl}/{recipe.Photo}";
+        }
+
         return recipe;
     }
 
+    public async Task<RecipeDetailReviewsDto> GetRecipeForReviews(int id)
+    {
+        var recipe = await repository.GetRecipeForReviews(id);
+        if (recipe.Photo != null)
+        {
+            recipe.Photo = $"{BaseUrl}/{recipe.Photo}";
+        }
+
+        if (recipe.User.ProfilePhoto != null)
+        {
+            recipe.User.ProfilePhoto = $"{BaseUrl}/{recipe.User.ProfilePhoto}";
+        }
+
+        return recipe;
+    }
 
 
     public async Task<List<RecipeListDto>> ListMyRecipesAsync(int userId, PaginationFilters? filters)
@@ -120,7 +140,7 @@ public class RecipeService(
 
         if (recipe.User.ProfilePhoto != null)
             recipe.User.ProfilePhoto = $"{BaseUrl}/{recipe.User.ProfilePhoto}";
-        
+
         if (recipe.VideoRecipe != null)
             recipe.VideoRecipe = $"{BaseUrl}/{recipe.VideoRecipe}";
 

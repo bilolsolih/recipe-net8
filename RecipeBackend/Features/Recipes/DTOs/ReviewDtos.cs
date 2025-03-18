@@ -1,5 +1,4 @@
 ﻿namespace RecipeBackend.Features.Recipes.DTOs;
-
 public class ReviewCreateDto
 {
     public required int RecipeId { get; set; }

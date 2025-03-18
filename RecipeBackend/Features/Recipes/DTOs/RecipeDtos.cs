@@ -64,6 +64,13 @@ public class RecipeDetailReviewsDto
     public UserForRecipeDetailDto User { get; set; }
 }
 
+public class RecipeCreateReviewDto
+{
+    public required int Id { get; set; }
+    public string? Photo { get; set; }
+    public required string Title { get; set; }
+}
+
 public class RecipeUpdateDto
 {
     public int? CategoryId { get; set; }

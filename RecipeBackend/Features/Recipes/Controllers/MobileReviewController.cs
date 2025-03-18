@@ -14,10 +14,11 @@ public class MobileReviewController(RecipeDbContext context, IMapper mapper, IWe
     : ControllerBase
 {
     [HttpPost("create"), Authorize]
-    public async Task<ActionResult<Review>> CreateReview(ReviewCreateDto payload)
+    public async Task<ActionResult<Review>> CreateReview([FromForm] ReviewCreateDto payload)
     {
         var userId = int.Parse(User.FindFirstValue("userid")!);
         var newReview = mapper.Map<Review>(payload);
+        newReview.UserId = userId;
         if (payload.Image != null)
         {
             var uploadsFolder = Path.Combine(webEnv.GetUploadBasePath(), "reviews");
@@ -30,13 +31,12 @@ public class MobileReviewController(RecipeDbContext context, IMapper mapper, IWe
             var filePath = Path.Combine(uploadsFolder, fileName);
             await using var fileStream = new FileStream(filePath, FileMode.Create);
             await payload.Image.CopyToAsync(fileStream);
-            newReview.Image = $"/reviews/{fileName}";
+            newReview.Image = $"reviews/{fileName}";
         }
 
-        newReview.UserId = userId;
         context.Reviews.Add(newReview);
         await context.SaveChangesAsync();
-        return newReview;
+        return StatusCode(201, newReview);
     }
 
     [HttpGet("list")]
@@ -52,9 +52,9 @@ public class MobileReviewController(RecipeDbContext context, IMapper mapper, IWe
         var baseUrl = HttpContext.GetUploadsBaseUrl();
         reviews.ForEach(review =>
         {
-            review.Image = review.Image != null ? baseUrl + review.Image : string.Empty;
+            review.Image = review.Image != null ? $"{baseUrl}/{review.Image}" : string.Empty;
             review.User.ProfilePhoto =
-                review.User.ProfilePhoto != null ? baseUrl + '/' + review.User.ProfilePhoto : string.Empty;
+                review.User.ProfilePhoto != null ? $"{baseUrl}/{review.User.ProfilePhoto}" : string.Empty;
         });
         return Ok(reviews);
     }

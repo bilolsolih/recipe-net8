@@ -184,4 +184,13 @@ public class RecipeRepository(RecipeDbContext context, IMapper mapper)
         var exists = await context.Recipes.AnyAsync(r => r.Id == id);
         return exists;
     }
+
+    public async Task<RecipeCreateReviewDto> GetRecipeForCreateReview(int id)
+    {
+        var recipe = await context.Recipes
+            .Where(recipe => recipe.Id == id)
+            .ProjectTo<RecipeCreateReviewDto>(mapper.ConfigurationProvider)
+            .SingleAsync();
+        return recipe;
+    }
 }

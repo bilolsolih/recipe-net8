@@ -41,6 +41,13 @@ public class MobileRecipeController(RecipeService service) : ControllerBase
         return Ok(recipe);
     }
 
+    [HttpGet("create-review/{id:int}")]
+    public async Task<ActionResult<RecipeCreateReviewDto>> GetRecipeForCreateReview(int id)
+    {
+        var recipe = await service.GetRecipeForCreateReview(id: id);
+        return Ok(recipe);
+    }
+
     [HttpGet("trending-recipe")]
     public async Task<IActionResult> GetTrendingRecipes()
     {
