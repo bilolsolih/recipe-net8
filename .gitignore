@@ -1,7 +1,7 @@
 ﻿# Build directories
 bin/
 obj/
-uploads/
+#uploads/
 publish/
 publish.zip
 
@@ -16,8 +16,8 @@ publish.zip
 *.log
 
 # Environment and configuration files
-appsettings*.json
-appsettings*.Development.json
+#appsettings*.json
+#appsettings*.Development.json
 
 # NuGet Packages
 *.nupkg
@@ -41,7 +41,7 @@ node_modules/
 **/docker-compose*.yml
 
 # Local databases
-*.db
+#*.db
 *.sqlite
 *.mdf
 *.ldf
