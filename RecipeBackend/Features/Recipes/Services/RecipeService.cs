@@ -119,16 +119,7 @@ public class RecipeService(
         {
             recipe.User.ProfilePhoto = $"{BaseUrl}/{recipe.User.ProfilePhoto}";
         }
-
-        if (recipe.Photo != null)
-        {
-            recipe.Photo = $"{BaseUrl}/{recipe.Photo}";
-        }
-
-        if (recipe.User.ProfilePhoto != null)
-        {
-            recipe.User.ProfilePhoto = $"{BaseUrl}/{recipe.User.ProfilePhoto}";
-        }
+        
         return recipe;
     }
 
