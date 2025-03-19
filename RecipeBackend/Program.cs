@@ -1,5 +1,5 @@
 using System.Net;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using RecipeBackend;
@@ -18,8 +18,12 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Configure(config.GetSection("Kestrel"));
 });
 
-builder.Services.AddControllers(options => options.Filters.Add<CoreExceptionsFilter>());
+builder.Services.AddControllers(options => options.Filters.Add<CoreExceptionsFilter>()).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddEndpointsApiExplorer();
+
 
 builder.Services.AddSwaggerGen(options =>
 {

@@ -14,11 +14,34 @@ public class ChefController(RecipeDbContext context, IMapper mapper) : Controlle
     [HttpGet("list")]
     public async Task<ActionResult<List<ChefListDto>>> ListChefs([FromQuery] ChefFilters filters)
     {
-        
-        var chefs = await context.Users.ProjectTo<ChefListDto>(mapper.ConfigurationProvider).ToListAsync();
+        var chefsQuery = context.Users.AsQueryable();
+        if (filters is { Page: not null, Limit: not null })
+        {
+            chefsQuery = chefsQuery.Skip((int)(filters.Limit * (filters.Page - 1)));
+        }
+
+        if (filters is { Limit: not null })
+        {
+            chefsQuery = chefsQuery.Take((int)filters.Limit);
+        }
+
+        if (filters is { Order: not null })
+        {
+            chefsQuery = filters.Order switch
+            {
+                OrderBy.Date => filters.Descending
+                    ? chefsQuery.OrderByDescending(chef => chef.Created)
+                    : chefsQuery.OrderBy(chef => chef.Created),
+                _ => chefsQuery
+            };
+        }
+
+        var chefs = await chefsQuery.ProjectTo<ChefListDto>(mapper.ConfigurationProvider).ToListAsync();
         var baseUrl = HttpContext.GetUploadsBaseUrl();
+
         chefs.ForEach(chef =>
             chef.ProfilePhoto = chef.ProfilePhoto != null ? $"{baseUrl}/{chef.ProfilePhoto}" : string.Empty);
+
         return Ok(chefs);
     }
 }
