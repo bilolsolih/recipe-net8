@@ -1,10 +1,13 @@
-﻿namespace RecipeBackend.Features.Recipes.DTOs;
+﻿using RecipeBackend.Features.Recipes.Models;
+
+namespace RecipeBackend.Features.Recipes.DTOs;
 
 public class RecipeCreateDto
 {
     public int CategoryId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
+    public Difficulty Difficulty { get; set; }
 
     public int TimeRequired { get; set; }
 
@@ -18,6 +21,7 @@ public class RecipeListDto
     public int CategoryId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
+    public required Difficulty Difficulty { get; set; }
     public string? Photo { get; set; }
     public int TimeRequired { get; set; }
     public double Rating { get; set; }
@@ -48,6 +52,7 @@ public class RecipeDetailDto
     public int TimeRequired { get; set; }
     public double Rating { get; set; }
     public int ReviewsCount { get; set; }
+    public required Difficulty Difficulty { get; set; }
     public UserForRecipeDetailDto User { get; set; }
 
     public IList<InstructionDto> Instructions { get; init; } = new List<InstructionDto>();
@@ -77,6 +82,7 @@ public class RecipeUpdateDto
     public string? Title { get; set; }
     public string? Description { get; set; }
     public IFormFile? Photo { get; set; }
+    public Difficulty? Difficulty { get; set; }
     public IFormFile? VideoRecipe { get; set; }
     public int? TimeRequired { get; set; }
 }

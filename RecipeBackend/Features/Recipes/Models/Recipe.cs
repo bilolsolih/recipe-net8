@@ -6,7 +6,7 @@ public enum Difficulty
 {
     Easy,
     Medium,
-    Hard
+    Hard,
 }
 
 public class Recipe
@@ -21,6 +21,8 @@ public class Recipe
     public int TimeRequired { get; set; }
     public bool IsTrending { set; get; }
     public double Rating { get; set; }
+    public required Difficulty Difficulty { get; set; }
+
 
     public User User { get; set; }
     public ICollection<User> LikedUsers { get; set; } = new List<User>();
