@@ -21,14 +21,14 @@ public record NotificationListDto
 
 public record NotificationCreateDto
 {
-  public required string Title { get; set; }
-  public required string Subtitle { get; set; }
-  public required DateTime SentDate { get; set; }
+  public required int NotificationTemplateId { get; set; }
+  public required bool SendNow { get; set; } = false;
+  public required DateTime ScheduledDate { get; set; }
 }
 
 public record NotificationUpdateDto
 {
   public string? Title { get; set; }
   public string? Subtitle { get; set; }
-  public DateTime? SentDate { get; set; }
+  public DateTime? ScheduledDate { get; set; }
 }

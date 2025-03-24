@@ -12,5 +12,8 @@ public static class Extensions
     
     services.AddScoped<NotificationTemplateRepository>();
     services.AddScoped<NotificationTemplateService>();
+    
+    services.AddScoped<NotificationRepository>();
+    services.AddScoped<NotificationService>();
   }
 }
