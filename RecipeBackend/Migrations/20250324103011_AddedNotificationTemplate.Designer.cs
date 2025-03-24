@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipeBackend;
 
@@ -10,9 +11,11 @@ using RecipeBackend;
 namespace RecipeBackend.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    partial class RecipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250324103011_AddedNotificationTemplate")]
+    partial class AddedNotificationTemplate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.12");
@@ -126,44 +129,6 @@ namespace RecipeBackend.Migrations
                     b.ToTable("Cuisines");
                 });
 
-            modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("created")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int>("NotificationTemplateId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("notification_template_id");
-
-                    b.Property<DateTime>("ScheduledDate")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("scheduled_date");
-
-                    b.Property<bool>("SendNow")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("send_now");
-
-                    b.Property<DateTime>("Updated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("updated")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NotificationTemplateId");
-
-                    b.ToTable("notifications", (string)null);
-                });
-
             modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.NotificationIcon", b =>
                 {
                     b.Property<int>("Id")
@@ -214,8 +179,7 @@ namespace RecipeBackend.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("NotificationIconId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("notification_icon_id");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Subtitle")
                         .IsRequired()
@@ -238,9 +202,6 @@ namespace RecipeBackend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NotificationIconId");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
 
                     b.ToTable("notification_templates", (string)null);
                 });
@@ -518,17 +479,6 @@ namespace RecipeBackend.Migrations
                     b.HasIndex("LikedUsersId");
 
                     b.ToTable("RecipeUser");
-                });
-
-            modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.Notification", b =>
-                {
-                    b.HasOne("RecipeBackend.Features.Notifications.Models.NotificationTemplate", "NotificationTemplate")
-                        .WithMany()
-                        .HasForeignKey("NotificationTemplateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("NotificationTemplate");
                 });
 
             modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.NotificationTemplate", b =>

@@ -16,7 +16,7 @@ public class OnboardingController(OnboardingService service) : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IList<OnboardingPage>> List()
+    public async Task<IEnumerable<OnboardingPage>> List()
     {
         var onboardingPages = await service.ListAsync();
         return onboardingPages;

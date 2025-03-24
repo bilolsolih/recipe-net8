@@ -6,16 +6,23 @@ namespace RecipeBackend.Features.Onboarding.Profiles;
 
 public class OnboardingPageProfile : Profile
 {
-    public OnboardingPageProfile()
-    {
-        CreateMap<OnboardingPage, OnboardingPageCreateDto>();
-        CreateMap<OnboardingPage, OnboardingPageListDto>();
-        CreateMap<OnboardingPage, OnboardingPageUpdateDto>();
+  public OnboardingPageProfile()
+  {
+    CreateMap<OnboardingPage, OnboardingPageListDto>();
+    CreateMap<OnboardingPageCreateDto, OnboardingPage>();
+    CreateMap<OnboardingPageUpdateDto, OnboardingPage>()
+      .ForAllMembers(
+        opts => opts.Condition(
+          (src, dest, obj) =>
+          {
+            if (obj is string str)
+            {
+              return !string.IsNullOrEmpty(str);
+            }
 
-        CreateMap<OnboardingPageCreateDto, OnboardingPage>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
-        CreateMap<OnboardingPageListDto, OnboardingPage>();
-        CreateMap<OnboardingPageUpdateDto, OnboardingPage>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
-    }
+            return obj != null;
+          }
+        )
+      );
+  }
 }

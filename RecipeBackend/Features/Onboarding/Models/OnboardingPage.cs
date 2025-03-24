@@ -3,8 +3,8 @@
 public class OnboardingPage
 {
     public int Id { get; set; }
-    public string Title { get; set; }
-    public string Subtitle { get; set; }
-    public string Picture { get; set; }
+    public required string Title { get; set; }
+    public required string Subtitle { get; set; }
+    public required string Image { get; set; }
     public int Order { get; set; }
 }

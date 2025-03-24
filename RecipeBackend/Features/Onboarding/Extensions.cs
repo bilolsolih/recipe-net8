@@ -5,7 +5,7 @@ namespace RecipeBackend.Features.Onboarding;
 
 public static class Extensions
 {
-    public static void RegisterOnboardingFeature(this IServiceCollection services, ConfigurationManager configuration)
+    public static void RegisterOnboardingFeature(this IServiceCollection services)
     {
         services.AddScoped<OnboardingRepository>();
         services.AddScoped<OnboardingService>();

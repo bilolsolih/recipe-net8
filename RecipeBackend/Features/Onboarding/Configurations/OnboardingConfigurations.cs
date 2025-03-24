@@ -6,23 +6,28 @@ namespace RecipeBackend.Features.Onboarding.Configurations;
 
 public class OnboardingConfigurations : IEntityTypeConfiguration<OnboardingPage>
 {
-    public void Configure(EntityTypeBuilder<OnboardingPage> builder)
-    {
-        builder.ToTable("OnboardingPage");
-        builder.HasKey(o => o.Id);
+  public void Configure(EntityTypeBuilder<OnboardingPage> builder)
+  {
+    builder.ToTable("onboarding_pages");
+    builder.HasKey(o => o.Id);
 
-        builder.Property(o => o.Title)
-               .IsRequired()
-               .HasMaxLength(128);
+    builder.Property(o => o.Title)
+      .IsRequired()
+      .HasMaxLength(128)
+      .HasColumnName("title");
 
-        builder.Property(o => o.Subtitle)
-               .IsRequired()
-               .HasMaxLength(256);
+    builder.Property(o => o.Subtitle)
+      .IsRequired()
+      .HasMaxLength(256)
+      .HasColumnName("subtitle");
 
-        builder.Property(o => o.Picture)
-               .IsRequired();
+    builder.Property(o => o.Image)
+      .IsRequired()
+      .HasMaxLength(128)
+      .HasColumnName("image");
 
-        builder.Property(o => o.Order)
-               .IsRequired();
-    }
+    builder.Property(o => o.Order)
+      .IsRequired()
+      .HasColumnName("order");
+  }
 }

@@ -6,14 +6,14 @@ namespace RecipeBackend.Features.Onboarding.Repositories;
 
 public class OnboardingRepository(RecipeDbContext context)
 {
-    public async Task<OnboardingPage> CreateAsync(OnboardingPage onboardingPage)
+    public async Task<OnboardingPage> AddAsync(OnboardingPage onboardingPage)
     {
         context.OnboardingPages.Add(onboardingPage);
         await context.SaveChangesAsync();
         return onboardingPage;
     }
 
-    public async Task<IList<OnboardingPage>> ListAsync()
+    public async Task<List<OnboardingPage>> GetAllAsync()
     {
         var onboardingPages = await context.OnboardingPages.ToListAsync();
         return onboardingPages;

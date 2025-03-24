@@ -2,9 +2,9 @@
 
 public class OnboardingPageCreateDto
 {
-    public string Title { get; set; } = string.Empty;
-    public string Subtitle { get; set; } = string.Empty;
-    public IFormFile Picture { get; set; }
+    public required string Title { get; set; }
+    public required string Subtitle { get; set; }
+    public required IFormFile Picture { get; set; }
     public int? Order { get; set; }
 }
 
@@ -18,9 +18,9 @@ public class OnboardingPageUpdateDto
 
 public class OnboardingPageListDto
 {
-    public int Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string Subtitle { get; set; } = string.Empty;
-    public string Picture { get; set; } = string.Empty;
+    public required int Id { get; set; }
+    public required string Title { get; set; }
+    public required string Subtitle { get; set; }
+    public required string Picture { get; set; }
     public int Order { get; set; }
 }

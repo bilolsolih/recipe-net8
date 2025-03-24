@@ -5,7 +5,7 @@ namespace RecipeBackend.Features.Recipes;
 
 public static class Extensions
 {
-    public static void RegisterRecipesFeature(this IServiceCollection services, ConfigurationManager configuration)
+    public static void RegisterRecipesFeature(this IServiceCollection services)
     {
         services.AddScoped<CategoryRepository>();
         services.AddScoped<CategoryService>();

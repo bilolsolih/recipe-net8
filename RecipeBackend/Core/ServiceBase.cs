@@ -13,17 +13,9 @@ public class ServiceBase(string folderName, IWebHostEnvironment webEnv, IHttpCon
 
     protected async Task<string> SaveUploadsFileAsync(IFormFile file)
     {
-        var fileExtension = GetFileExtension(file);
-        var lastPeriodIndex = file.FileName.LastIndexOf('.');
-        var fileName = file.FileName[..lastPeriodIndex] + GenerateShortGuid();
-        fileName += fileExtension;
+        var fileName = $"{GenerateShortGuid()}{GetFileExtension(file)}";
 
         var filePath = Path.Combine(UploadsBaseAbsolutePath, FolderName, fileName);
-
-        if (!Directory.Exists(UploadsBaseAbsolutePath))
-        {
-            Directory.CreateDirectory(UploadsBaseAbsolutePath);
-        }
 
         if (!Directory.Exists(Path.Combine(UploadsBaseAbsolutePath, FolderName)))
         {
@@ -33,9 +25,7 @@ public class ServiceBase(string folderName, IWebHostEnvironment webEnv, IHttpCon
         await using var fileStream = new FileStream(filePath, FileMode.Create);
         await file.CopyToAsync(fileStream);
 
-        var relativeFilePath = FolderName + '/' + fileName;
-
-        return relativeFilePath;
+        return $"{FolderName}/{fileName}";
     }
 
     protected bool DeleteUploadsFile(string filename)
