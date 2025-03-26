@@ -9,6 +9,7 @@ public class UserProfile : Profile
 {
     public UserProfile()
     {
+        CreateMap<User, UserListDto>();
         CreateMap<UserCreateDto, User>()
             .ForMember(u => u.Id, opt => opt.Ignore())
             .ForMember(u => u.Gender, opt => opt.Ignore())

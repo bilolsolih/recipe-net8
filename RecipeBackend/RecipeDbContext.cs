@@ -15,6 +15,7 @@ namespace RecipeBackend;
 public class RecipeDbContext(DbContextOptions<RecipeDbContext> options) : DbContext(options)
 {
   public DbSet<User> Users { get; set; }
+  public DbSet<UserToUser> UsersToUsers { get; set; }
 
   public DbSet<Category> Categories { get; set; }
   public DbSet<Recipe> Recipes { get; set; }
@@ -34,6 +35,7 @@ public class RecipeDbContext(DbContextOptions<RecipeDbContext> options) : DbCont
   {
     base.OnModelCreating(modelBuilder);
     modelBuilder.ApplyConfiguration(new UserConfigurations());
+    // modelBuilder.ApplyConfiguration(new UserToUserConfigurations());
 
     modelBuilder.ApplyConfiguration(new CategoryConfigurations());
     modelBuilder.ApplyConfiguration(new RecipeConfigurations());

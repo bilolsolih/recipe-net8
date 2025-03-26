@@ -1,4 +1,4 @@
-﻿INSERT INTO "OnboardingPage" ("Title", "Subtitle", "Picture", "Order")
+﻿INSERT INTO "onboarding_pages" ("title", "subtitle", "image", "order")
 VALUES ('Get Inspired', 'Get inspired with our daily recipe recommendations.', 'onboarding_pages/onboarding_1.png', 1),
        ('Get an increase your skills', 'Learn essential cooking techniques at your own pace.',
         'onboarding_pages/onboarding_2.png', 2);

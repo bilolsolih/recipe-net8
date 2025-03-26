@@ -11,8 +11,8 @@ using RecipeBackend;
 namespace RecipeBackend.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20250324103121_AddedNotificationTemplateSomechanges")]
-    partial class AddedNotificationTemplateSomechanges
+    [Migration("20250326122424_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace RecipeBackend.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(64)
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("Gender")
@@ -49,7 +49,7 @@ namespace RecipeBackend.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(64)
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
@@ -87,6 +87,31 @@ namespace RecipeBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Features.Authentication.Models.UserToUser", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FollowersId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FollowingsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "FollowerId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.HasIndex("FollowersId");
+
+                    b.HasIndex("FollowingsId");
+
+                    b.ToTable("users_to_users", (string)null);
                 });
 
             modelBuilder.Entity("RecipeBackend.Features.Customization.Models.AllergicIngredient", b =>
@@ -127,6 +152,44 @@ namespace RecipeBackend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cuisines");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("NotificationTemplateId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("notification_template_id");
+
+                    b.Property<DateTime>("ScheduledDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("scheduled_date");
+
+                    b.Property<bool>("SendNow")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("send_now");
+
+                    b.Property<DateTime>("Updated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationTemplateId");
+
+                    b.ToTable("notifications", (string)null);
                 });
 
             modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.NotificationIcon", b =>
@@ -203,6 +266,9 @@ namespace RecipeBackend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NotificationIconId");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
 
                     b.ToTable("notification_templates", (string)null);
                 });
@@ -480,6 +546,48 @@ namespace RecipeBackend.Migrations
                     b.HasIndex("LikedUsersId");
 
                     b.ToTable("RecipeUser");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Features.Authentication.Models.UserToUser", b =>
+                {
+                    b.HasOne("RecipeBackend.Features.Authentication.Models.User", "Follower")
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecipeBackend.Features.Authentication.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("FollowersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecipeBackend.Features.Authentication.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("FollowingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecipeBackend.Features.Authentication.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.Notification", b =>
+                {
+                    b.HasOne("RecipeBackend.Features.Notifications.Models.NotificationTemplate", "NotificationTemplate")
+                        .WithMany()
+                        .HasForeignKey("NotificationTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("NotificationTemplate");
                 });
 
             modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.NotificationTemplate", b =>

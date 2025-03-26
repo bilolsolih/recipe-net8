@@ -11,8 +11,8 @@ using RecipeBackend;
 namespace RecipeBackend.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20250324112048_AddedNotificationModel")]
-    partial class AddedNotificationModel
+    [Migration("20250326125446_InitialFixx")]
+    partial class InitialFixx
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace RecipeBackend.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(64)
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("Gender")
@@ -49,7 +49,7 @@ namespace RecipeBackend.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(64)
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
@@ -87,6 +87,21 @@ namespace RecipeBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Features.Authentication.Models.UserToUser", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "FollowerId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("UsersToUsers");
                 });
 
             modelBuilder.Entity("RecipeBackend.Features.Customization.Models.AllergicIngredient", b =>
@@ -521,6 +536,25 @@ namespace RecipeBackend.Migrations
                     b.HasIndex("LikedUsersId");
 
                     b.ToTable("RecipeUser");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Features.Authentication.Models.UserToUser", b =>
+                {
+                    b.HasOne("RecipeBackend.Features.Authentication.Models.User", "Follower")
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RecipeBackend.Features.Authentication.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RecipeBackend.Features.Notifications.Models.Notification", b =>

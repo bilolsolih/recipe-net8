@@ -48,6 +48,14 @@ public class UserUpdateDto
     public string? PhoneNumber { get; set; }
     public string? BirthDate { get; set; }
 }
+public class UserListDto
+{
+    public required int Id { get; set; }
+    public required string Username { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public string? ProfilePhoto { get; set; }
+}
 
 public class TopChefSmall
 {
