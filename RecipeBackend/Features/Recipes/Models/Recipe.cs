@@ -18,9 +18,7 @@ public class Recipe
 
   public required int CategoryId { get; set; }
   public required Category Category { get; set; }
-
-  public required int CollectionId { get; set; }
-  public required Collection Collection { get; set; }
+  
   public required string Title { get; set; }
   public required string Description { get; set; }
   public string? Photo { get; set; }

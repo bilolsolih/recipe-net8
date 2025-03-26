@@ -16,9 +16,6 @@ public class RecipeConfigurations : IEntityTypeConfiguration<Recipe>
     builder.HasKey(r => r.Id);
     builder.HasOne(r => r.User).WithMany(u => u.Recipes);
     builder.HasOne(r => r.Category).WithMany(c => c.Recipes);
-    builder.HasOne(r => r.Collection)
-      .WithMany(collection => collection.Recipes)
-      .HasForeignKey(r => r.CollectionId);
     
     builder.HasMany(r => r.LikedUsers)
       .WithMany(u => u.LikedRecipes);
