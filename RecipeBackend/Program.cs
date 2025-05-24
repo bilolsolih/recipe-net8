@@ -14,10 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(
   options =>
   {
-    var config = builder.Configuration;
     options.Limits.MaxRequestBodySize = int.MaxValue;
     options.Listen(IPAddress.Parse("0.0.0.0"), 8888);
-    options.Configure(config.GetSection("Kestrel"));
   }
 );
 
@@ -98,20 +96,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication(); // added for the sake of the Authentication Feature
 app.UseAuthorization();
 
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapControllers();
 
-// using (var scope = app.Services.CreateScope())
-// {
-//     var dbContext = scope.ServiceProvider.GetRequiredService<RecipeDbContext>();
-//     dbContext.Database.Migrate(); // Applies migrations and creates the database if not exists
-// }
 
 app.Run();
