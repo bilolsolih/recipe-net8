@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RecipeBackend.Core;
 using RecipeBackend.Core.Exceptions;
 using RecipeBackend.Features.Authentication.DTOs;
@@ -9,6 +10,7 @@ using RecipeBackend.Features.Authentication.Repositories;
 namespace RecipeBackend.Features.Authentication.Services;
 
 public class UserService(
+  RecipeDbContext context,
   UserRepository userRepo,
   IMapper mapper,
   IWebHostEnvironment webEnv,
@@ -17,7 +19,38 @@ public class UserService(
 {
   public async Task<User> CreateUserAsync(UserCreateDto payload)
   {
-    var user = mapper.Map<User>(payload);
+    var user = new User()
+    {
+      Username = payload.Username,
+      FirstName = payload.FirstName,
+      LastName = payload.LastName,
+      Email = payload.Email,
+      PhoneNumber = payload.PhoneNumber,
+      BirthDate = DateOnly.Parse(payload.BirthDate),
+      Password = payload.Password,
+      CookingLevelId = payload.CookingLevelId,
+    };
+    if (payload.AllergicIngredients != null)
+    {
+      var allergicIngredients = await context.AllergicIngredients
+        .Where(a => payload.AllergicIngredients.Contains(a.Id))
+        .ToListAsync();
+      foreach (var allergicIngredient in allergicIngredients)
+      {
+        user.AllergicIngredients.Add(allergicIngredient);
+      }
+    }
+
+    if (payload.Cuisines != null)
+    {
+      var cuisines = await context.Cuisines
+        .Where(a => payload.Cuisines.Contains(a.Id))
+        .ToListAsync();
+      foreach (var allergicIngredient in cuisines)
+      {
+        user.Cuisines.Add(allergicIngredient);
+      }
+    }
 
     return await userRepo.AddAsync(user);
   }
@@ -45,7 +78,34 @@ public class UserService(
   {
     var user = await userRepo.GetByIdAsync(id);
     DoesNotExistException.ThrowIfNull(user, $"User with id: {id} does not exist");
+
     mapper.Map(payload, user);
+
+    user.AllergicIngredients.Clear();
+    user.Cuisines.Clear();
+
+    if (payload.AllergicIngredients != null)
+    {
+      var allergicIngredients = await context.AllergicIngredients
+        .Where(a => payload.AllergicIngredients.Contains(a.Id))
+        .ToListAsync();
+      foreach (var allergicIngredient in allergicIngredients)
+      {
+        user.AllergicIngredients.Add(allergicIngredient);
+      }
+    }
+
+    if (payload.Cuisines != null)
+    {
+      var cuisines = await context.Cuisines
+        .Where(a => payload.Cuisines.Contains(a.Id))
+        .ToListAsync();
+      foreach (var allergicIngredient in cuisines)
+      {
+        user.Cuisines.Add(allergicIngredient);
+      }
+    }
+
     await userRepo.UpdateAsync(user);
 
     return mapper.Map<UserDetailDto>(user);
@@ -66,8 +126,7 @@ public class UserService(
   public async Task<IEnumerable<TopChefSmall>> GetTopChefsAsync(UserFilters? filters)
   {
     var topChefs = await userRepo.GetTopChefsAsync(filters);
-    topChefs.ForEach(
-      topChef =>
+    topChefs.ForEach(topChef =>
       {
         if (topChef.Photo != null) topChef.Photo = $"{BaseUrl}/{topChef.Photo}";
       }
@@ -80,8 +139,7 @@ public class UserService(
   {
     var allFollowers = await userRepo.GetAllFollowersByIdAsync(userId);
     var followers = mapper.Map<List<UserListDto>>(allFollowers);
-    followers.ForEach(
-      follower =>
+    followers.ForEach(follower =>
       {
         if (follower.ProfilePhoto != null)
           follower.ProfilePhoto = $"{BaseUrl}/{follower.ProfilePhoto}";
@@ -95,8 +153,7 @@ public class UserService(
   {
     var allFollowings = await userRepo.GetAllFollowingsByIdAsync(userId);
     var followings = mapper.Map<List<UserListDto>>(allFollowings);
-    followings.ForEach(
-      following =>
+    followings.ForEach(following =>
       {
         if (following.ProfilePhoto != null)
           following.ProfilePhoto = $"{BaseUrl}/{following.ProfilePhoto}";

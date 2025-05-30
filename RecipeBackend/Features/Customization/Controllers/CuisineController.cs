@@ -33,7 +33,7 @@ public class CuisineController(RecipeDbContext context, IMapper mapper, IWebHost
         var newCuisine = new Cuisine
         {
             Title = payload.Title,
-            Image = FolderName + '/' + payload.Image.FileName
+            Image = FolderName + '/' + payload.Image.FileName,
         };
 
         context.Cuisines.Add(newCuisine);

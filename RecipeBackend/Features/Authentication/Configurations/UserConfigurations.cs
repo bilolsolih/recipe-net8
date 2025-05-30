@@ -11,7 +11,7 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
     builder.HasKey(u => u.Id);
 
     builder.HasMany(u => u.Followers)
-      .WithMany(u=>u.Followings)
+      .WithMany(u => u.Followings)
       .UsingEntity<UserToUser>(
         j => j.HasOne(uf => uf.Follower)
           .WithMany()
@@ -21,9 +21,16 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
           .WithMany()
           .HasForeignKey(uf => uf.UserId)
           .OnDelete(DeleteBehavior.Restrict),
-
         j => j.HasKey(uf => new { uf.UserId, uf.FollowerId })
       );
+
+
+    builder.HasOne(u => u.CookingLevel)
+      .WithMany(c => c.Users)
+      .HasForeignKey(u => u.CookingLevelId);
+
+    builder.HasMany(u => u.Cuisines).WithMany();
+    builder.HasMany(u => u.AllergicIngredients).WithMany();
 
     builder.HasIndex(u => u.Email)
       .IsUnique();

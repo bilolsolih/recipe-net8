@@ -16,6 +16,7 @@ public class RecipeDbContext(DbContextOptions<RecipeDbContext> options) : DbCont
 {
   public DbSet<User> Users { get; set; }
   public DbSet<UserToUser> UsersToUsers { get; set; }
+  public DbSet<CookingLevel> CookingLevels { get; set; }
 
   public DbSet<Category> Categories { get; set; }
   public DbSet<Recipe> Recipes { get; set; }
@@ -36,6 +37,7 @@ public class RecipeDbContext(DbContextOptions<RecipeDbContext> options) : DbCont
     base.OnModelCreating(modelBuilder);
     modelBuilder.ApplyConfiguration(new UserConfigurations());
     // modelBuilder.ApplyConfiguration(new UserToUserConfigurations());
+    modelBuilder.ApplyConfiguration(new CookingLevelConfigurations());
 
     modelBuilder.ApplyConfiguration(new CategoryConfigurations());
     modelBuilder.ApplyConfiguration(new RecipeConfigurations());
